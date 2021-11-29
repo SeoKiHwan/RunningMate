@@ -1,6 +1,7 @@
-package toyproject.runningmate.domain.User;
+package toyproject.runningmate.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import toyproject.runningmate.domain.user.User;
 
 import java.util.Optional;
 

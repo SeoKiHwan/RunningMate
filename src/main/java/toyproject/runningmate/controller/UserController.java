@@ -1,4 +1,4 @@
-package toyproject.runningmate.web.user;
+package toyproject.runningmate.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import toyproject.runningmate.config.security.JwtTokenProvider;
-import toyproject.runningmate.domain.User.User;
-import toyproject.runningmate.domain.User.UserRepository;
+import toyproject.runningmate.domain.user.User;
+import toyproject.runningmate.repository.UserRepository;
 
 import java.util.Collections;
 import java.util.Map;

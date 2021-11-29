@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import toyproject.runningmate.domain.User.UserRepository;
+import toyproject.runningmate.repository.UserRepository;
 
 @RequiredArgsConstructor
 @Service

@@ -1,4 +1,4 @@
-package toyproject.runningmate.domain.User;
+package toyproject.runningmate.domain.user;
 
 
 import lombok.AllArgsConstructor;
