@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import toyproject.runningmate.domain.crew.Crew;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -32,6 +33,10 @@ public class User implements UserDetails {
 
     private String email;
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "CREW_ID")
+    private Crew crew;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
