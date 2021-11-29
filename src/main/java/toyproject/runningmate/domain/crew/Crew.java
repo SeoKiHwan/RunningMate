@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Crew {
+public class Crew {     // crew
 
     @Id
     @GeneratedValue
