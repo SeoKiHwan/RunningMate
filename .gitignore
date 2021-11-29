@@ -7,7 +7,7 @@ build/
 
 
 build.gradle
-src/main/resources/application.properties
+application.properties
 
 
 
