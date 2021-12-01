@@ -1,14 +1,14 @@
 package toyproject.runningmate.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.user.User;
+import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.UserRepository;
+import toyproject.runningmate.service.UserService;
 
 import java.util.Collections;
 import java.util.Map;
@@ -20,6 +20,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     //회원가입
     @PostMapping("/join")
@@ -50,5 +51,15 @@ public class UserController {
     @GetMapping("/admin")
     public String hello() {
         return "hello admin";
+    }
+    
+    @GetMapping("/mypage")
+    public UserDto getMyPage(@RequestBody Map<String, String> user){
+        User member = userRepository.findByEmail(user.get("email"))
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+
+        UserDto userDto = userService.getUserDto(member);
+
+        return userDto;
     }
 }
