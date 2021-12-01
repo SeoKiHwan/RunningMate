@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import toyproject.runningmate.domain.crew.Crew;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,8 +32,19 @@ public class User implements UserDetails {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "EMAIL")
     private String email;
+
     private String password;
+
+    @Column(name = "NICK_NAME")
+    private String nickName;
+
+    @Column(name = "REG_DATE")
+    private LocalDateTime regdate;
+
+    @Column(name = "ADDRESS")
+    private String address;
 
     @ManyToOne
     @JoinColumn(name = "CREW_ID")
