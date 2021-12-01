@@ -11,8 +11,11 @@ import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.UserRepository;
 import toyproject.runningmate.service.UserService;
 
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -53,7 +56,8 @@ public class UserController {
     public String hello() {
         return "hello admin";
     }
-    
+
+
     @GetMapping("/mypage")
     public UserDto getMyPage(@RequestBody Map<String, String> user){
         User member = userRepository.findByEmail(user.get("email"))
@@ -70,9 +74,32 @@ public class UserController {
      * @param userId
      */
     @DeleteMapping("/user/{userId}")
-    public ResponseEntity<String> deleteMyId(@RequestParam Long userId) {
+    public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
         userRepository.deleteById(userId);
 
         return ResponseEntity.ok("삭제 완료");
+    }
+
+    /**
+     * FE에서 id, (변경할) email, nickName, address를 요청
+     * @param user
+     * @return
+     */
+    @Transactional
+    @PostMapping("/user/{userId}")
+    public ResponseEntity<String> updateUser(@RequestBody Map<String, String> user) {
+        User member = userRepository.findById(Long.parseLong(user.get("id")))
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+
+        //이메일 중복확인
+        boolean isExistEmail = userRepository.findByEmail(user.get("email")).isEmpty();
+
+        if(!isExistEmail){
+            throw new IllegalArgumentException("중복된 메일입니다.");
+        }
+
+        member.update(user.get("email"), user.get("nickName"), user.get("address"));
+
+        return ResponseEntity.ok("수정 완료");
     }
 }

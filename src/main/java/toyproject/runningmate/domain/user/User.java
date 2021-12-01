@@ -94,4 +94,10 @@ public class User implements UserDetails {
         System.out.println("User.isEnabled");
         return true;
     }
+
+    public void update(String email, String nickName, String address){
+        this.email = email;
+        this.nickName = nickName;
+        this.address = address;
+    }
 }
