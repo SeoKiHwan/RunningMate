@@ -2,6 +2,7 @@ package toyproject.runningmate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import toyproject.runningmate.config.security.JwtTokenProvider;
@@ -61,5 +62,17 @@ public class UserController {
         UserDto userDto = userService.getUserDto(member);
 
         return userDto;
+    }
+
+    /**
+     * 마이페이지에서 삭제 가능
+     * -> 예외처리 할 필요 X
+     * @param userId
+     */
+    @DeleteMapping("/user/{userId}")
+    public ResponseEntity<String> deleteMyId(@RequestParam Long userId) {
+        userRepository.deleteById(userId);
+
+        return ResponseEntity.ok("삭제 완료");
     }
 }
