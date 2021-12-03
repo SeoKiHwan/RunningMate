@@ -1,6 +1,7 @@
 package toyproject.runningmate.domain.user;
 
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,17 +33,21 @@ public class User implements UserDetails {
     @GeneratedValue
     private Long id;
 
+    @NotNull
     @Column(name = "EMAIL")
     private String email;
 
+    @NotNull
     private String password;
 
+    @NotNull
     @Column(name = "NICK_NAME")
     private String nickName;
 
     @Column(name = "REG_DATE")
-    private LocalDateTime regdate;
+    private LocalDateTime regDate;
 
+    @NotNull
     @Column(name = "ADDRESS")
     private String address;
 
@@ -95,8 +100,7 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void update(String email, String nickName, String address){
-        this.email = email;
+    public void update(String nickName, String address){
         this.nickName = nickName;
         this.address = address;
     }
