@@ -11,6 +11,7 @@ import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.UserRepository;
 import toyproject.runningmate.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -57,15 +58,21 @@ public class UserController {
         return "hello admin";
     }
 
-
     @GetMapping("/mypage")
-    public UserDto getMyPage(@RequestBody Map<String, String> user){
-        User member = userRepository.findByEmail(user.get("email"))
+    public UserDto getMyPage(HttpServletRequest request){
+
+        String token = request.getHeader("X-AUTH-TOKEN");
+
+        String userEmail = jwtTokenProvider.getUserPk(token);
+
+        User member = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
 
         UserDto userDto = userService.getUserDto(member);
 
         return userDto;
+
+        //header : token -> 해석 ->   "email" : "hyeonwoo"
     }
 
     /**
@@ -102,4 +109,11 @@ public class UserController {
 
         return ResponseEntity.ok("수정 완료");
     }
+
+    /**
+     * 3번 유저가 2번 유저 프로필 볼 때
+     *
+     * FE에서 nickName(2번 유저), token(3번 유저, 현재 로그인 상태)
+     */
+
 }
