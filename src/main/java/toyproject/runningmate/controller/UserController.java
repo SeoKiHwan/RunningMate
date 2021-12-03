@@ -2,6 +2,7 @@ package toyproject.runningmate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -27,93 +28,110 @@ public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
 
+    /**
+     * 크루 null 가능
+     * 나머지는 not null
+     * @param user
+     * @return
+     */
     //회원가입
     @PostMapping("/join")
     public Long join(@RequestBody Map<String, String> user) {
-        return userRepository.save(User.builder()
-                .email(user.get("email"))
-                .password(passwordEncoder.encode(user.get("password")))
-                .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
-                .build()).getId();
+        return userService.join(user);
     }
 
     //로그인
     @PostMapping("/login")
     public String login(@RequestBody Map<String, String> user) {
-        User member = userRepository.findByEmail(user.get("email"))
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일"));
+        User member = userService.getUserByEmail(user.get("email"));
+
         if (!passwordEncoder.matches(user.get("password"), member.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호");
         }
         return jwtTokenProvider.createToken(member.getUsername(), member.getRoles());
     }
 
-    @GetMapping("/user")
-    public String hi() {
-        return "hi user";
-    }
-
-    @GetMapping("/admin")
-    public String hello() {
-        return "hello admin";
-    }
-
+    /**
+     * 로그인 시
+     * FE에서 토큰 주고
+     * 유저 정보
+     * @param request
+     * @return
+     */
     @GetMapping("/mypage")
     public UserDto getMyPage(HttpServletRequest request){
 
-        String token = request.getHeader("X-AUTH-TOKEN");
-
-        String userEmail = jwtTokenProvider.getUserPk(token);
-
-        User member = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+        User member = userService.getUserByToken(request);
 
         UserDto userDto = userService.getUserDto(member);
 
         return userDto;
-
-        //header : token -> 해석 ->   "email" : "hyeonwoo"
     }
 
     /**
-     * 마이페이지에서 삭제 가능
-     * -> 예외처리 할 필요 X
-     * @param userId
+     * FE에서 닉네임을 줌
+     * BE에서 닉네임으로 유저 찾고 삭제
+     *
+     * @param nickName
+     * @return
      */
-    @DeleteMapping("/user/{userId}")
-    public ResponseEntity<String> deleteUser(@RequestParam Long userId) {
-        userRepository.deleteById(userId);
+    @DeleteMapping("/user/{nickName}")
+    public ResponseEntity<String> deleteUser(@RequestParam String nickName) {
+
+        User deleteUser = userService.getUserByNickName(nickName);
+
+        userRepository.deleteById(deleteUser.getId());
 
         return ResponseEntity.ok("삭제 완료");
     }
 
     /**
-     * FE에서 id, (변경할) email, nickName, address를 요청
+     *
+     * FE에서 토큰, (변경할) nickName, address
+     * BE에서 수정
+     * @param request
      * @param user
      * @return
      */
     @Transactional
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<String> updateUser(@RequestBody Map<String, String> user) {
-        User member = userRepository.findById(Long.parseLong(user.get("id")))
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+    @PostMapping("/user/{nickName}")
+    public ResponseEntity<String> updateUser(HttpServletRequest request,  @RequestBody Map<String, String> user) {
 
-        //이메일 중복확인
-        boolean isExistEmail = userRepository.findByEmail(user.get("email")).isEmpty();
+        User member = userService.getUserByToken(request);
 
-        if(!isExistEmail){
-            throw new IllegalArgumentException("중복된 메일입니다.");
+        if (userService.isExistNickName(user.get("nickName"))) {
+            return new ResponseEntity<>("중복된 닉네임입니다.", HttpStatus.CONFLICT);
         }
 
-        member.update(user.get("email"), user.get("nickName"), user.get("address"));
+        member.update(user.get("nickName"), user.get("address"));
 
         return ResponseEntity.ok("수정 완료");
     }
 
     /**
      * 3번 유저가 2번 유저 프로필 볼 때
-     *
      * FE에서 nickName(2번 유저), token(3번 유저, 현재 로그인 상태)
+     * /user/{nickName}
+     **/
+    @GetMapping("/user/{nickName}")
+    public Object getOtherUser(HttpServletRequest request, @RequestParam String nickName) {
+        User member = userService.getUserByToken(request);
+
+        if(member.getNickName().equals(nickName)){
+            //같으면 mypage로 redirect
+            return HttpStatus.FOUND;
+        }
+
+        User findUser = userService.getUserByNickName(nickName);
+        UserDto findUserDto = userService.getUserDto(findUser);
+
+        return findUserDto;
+    }
+
+
+
+    /**
+     * 비밀번호 변경
      */
 
 }
