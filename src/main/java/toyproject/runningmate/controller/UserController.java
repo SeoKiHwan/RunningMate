@@ -39,7 +39,6 @@ public class UserController {
     @PostMapping("/join")
     @Transactional
     public Long join(@RequestBody UserDto userDto) {
-        System.out.println("userDto.getNickName() = " + userDto.getNickName());
         return userService.join(userDto);
     }
 
@@ -47,16 +46,16 @@ public class UserController {
     //패스워드 빼고 다 달라.
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody UserDto userDto) {
-        UserDto findUserDto = userService.getUserByEmail(userDto.getEmail());
-        User user = findUserDto.toEntity(findUserDto);
 
-        if (!passwordEncoder.matches(user.getPassword(), findUserDto.getPassword())) {
+        UserDto findUserDto = userService.getUserByEmail(userDto.getEmail());
+
+        if (!passwordEncoder.matches(userDto.getPassword(), findUserDto.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호");
         }
 
         String token = jwtTokenProvider.createToken(findUserDto.getEmail(), findUserDto.getRoles());
 
-        userDto.setPassword("");
+        findUserDto.setPassword("");
 
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("token", token);
