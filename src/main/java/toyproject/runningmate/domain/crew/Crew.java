@@ -12,15 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-<<<<<<< HEAD
-public class Crew {     // crew
-=======
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Crew {
->>>>>>> ced1f6fefccd6efcc90eae7926e6dbf4abab98c2
+
 
     @Id
     @GeneratedValue
