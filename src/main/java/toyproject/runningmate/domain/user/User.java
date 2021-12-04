@@ -3,10 +3,7 @@ package toyproject.runningmate.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +22,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class User implements UserDetails {
 
     //spring security는 UserDetails 객체를 통해 권한 정보를 관리하기 때문에
@@ -140,6 +138,7 @@ public class User implements UserDetails {
                 .address(address)
                 .roles(roles)
                 .isCrewLeader(isCrewLeader)
+                .password(password)
                 .build();
         return userDto;
     }

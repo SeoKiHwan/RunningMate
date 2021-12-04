@@ -34,6 +34,8 @@ public class UserService {
         UserDto userDto = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toDto();
 
+        userDto.setPassword("");
+
         return userDto;
     }
 
@@ -64,7 +66,6 @@ public class UserService {
         UserDto userDto = userRepository.findByEmail(email).
                 orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toDto();
 
-        System.out.println(userDto.getId() + " " + userDto.getNickName());
         return userDto;
     }
 

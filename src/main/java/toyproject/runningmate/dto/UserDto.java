@@ -18,6 +18,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @Builder
+@ToString
 public class UserDto {
 
     private Long id;
@@ -40,6 +41,7 @@ public class UserDto {
                 .address(userDto.getAddress())
                 .roles(userDto.getRoles())
                 .isCrewLeader(userDto.isCrewLeader())
+                .password(userDto.getPassword())
                 .build();
 
         return user;
