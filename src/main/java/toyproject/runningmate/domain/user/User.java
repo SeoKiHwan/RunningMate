@@ -1,6 +1,8 @@
 package toyproject.runningmate.domain.user;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,8 +11,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import toyproject.runningmate.domain.crew.Crew;
+import toyproject.runningmate.dto.UserDto;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,12 +35,27 @@ public class User implements UserDetails {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "EMAIL")
     private String email;
+
     private String password;
+
+    @Column(name = "NICK_NAME")
+    private String nickName;
+
+    @Column(name = "REG_DATE")
+    private LocalDateTime regDate;
+
+    @Column(name = "ADDRESS")
+    private String address;
 
     @ManyToOne
     @JoinColumn(name = "CREW_ID")
     private Crew crew;
+
+    @Column(name = "IS_CREW_LEADER")
+    private boolean isCrewLeader;
+
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
@@ -82,4 +101,47 @@ public class User implements UserDetails {
         System.out.println("User.isEnabled");
         return true;
     }
+
+    public void update(String nickName, String address){
+        this.nickName = nickName;
+        this.address = address;
+    }
+
+    //양방향 편의 메서드
+    public void addCrew(Crew crew) {
+        this.crew = crew;
+        crew.getUsers().add(this);
+    }
+
+    //crew장
+
+    public void setCrewLeader(boolean crewLeader) {
+        isCrewLeader = crewLeader;
+    }
+
+    public UserDto toDto() {
+//        UserDto userDto = UserDto.builder()
+//                .email(user.getEmail())
+//                .id(user.getId())
+//                .crew(user.getCrew())
+//                .nickName(user.getNickName())
+//                .regDate(user.getRegDate())
+//                .address(user.getAddress())
+//                .roles(user.getRoles())
+//                .isCrewLeader(user.isCrewLeader())
+//                .build();
+
+        UserDto userDto = UserDto.builder()
+                .email(email)
+                .id(id)
+                .crew(crew)
+                .nickName(nickName)
+                .regDate(regDate)
+                .address(address)
+                .roles(roles)
+                .isCrewLeader(isCrewLeader)
+                .build();
+        return userDto;
+    }
+
 }

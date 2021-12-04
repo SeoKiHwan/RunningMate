@@ -35,7 +35,9 @@ public class RunningmateApplication {
 		userRepository.save(User.builder()
 				.email("email")
 				.password(passwordEncoder.encode("password"))
-				.roles(Collections.singletonList("ROLE_ADMIN")) // 최초 가입시 USER 로 설정
+				.roles(Collections.singletonList("ROLE_ADMIN"))
+				.address("미정")
+				.nickName("운영자")
 				.build()).getId();
 	}
 }
