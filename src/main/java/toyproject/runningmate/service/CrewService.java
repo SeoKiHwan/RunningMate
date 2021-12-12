@@ -8,14 +8,11 @@ import toyproject.runningmate.domain.crew.Crew;
 import toyproject.runningmate.domain.request.RequestUserToCrew;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.CrewDto;
-import toyproject.runningmate.dto.RequestUserToCrewDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.CrewRepository;
 import toyproject.runningmate.repository.UserRepository;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -32,26 +29,12 @@ public class CrewService {
         User findUserEntity = userRepository.findById(userDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
 
-//        crewDto.builder()
-//                .crewLeaderId(userDto.getId())
-//                .build();
+        crewDto.setCrewLeaderId(userDto.getId());
 
         Crew crewEntity = convertDtoToEntity(crewDto);
-        findUserEntity.setCrew(crewEntity); // setCrew안 양방향은 제거
+        findUserEntity.setCrew(crewEntity); // setCrew 양방향은 제거
         return crewRepository.save(crewEntity).getId();  // Entity로 저장
     }
-
-//    private void crewSaveViaDto(CrewDto crewDto){   // Dto -> Entity 변환 대신
-//
-//        Crew crewEntity = crewRepository.findById(crewDto.getId())
-//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루"));
-//
-//
-//        for (UserDto userDto : crewDto.getUserDtos()) {
-//             crewEntity.getUsers().add(userDto.toEntity());
-//        }
-//
-//    }
 
     private CrewDto convertEntityToDto(Crew crew) {
         CrewDto crewDto= CrewDto.builder()

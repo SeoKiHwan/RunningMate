@@ -18,6 +18,7 @@ import toyproject.runningmate.service.CrewService;
 import toyproject.runningmate.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,7 +51,6 @@ public class CrewController {
         if(userService.hasCrew(findUserDto)){  // User의 크루가 이미 존재하는 경우
             return ResponseEntity.ok("이미 크루가 존재합니다.");
         }
-
 
         crewService.save(findUserDto,crewDto);         // 새 크루 저장
         userService.updateCrewLeaderStatus(findUserDto.getId());    // isCrewLeader 상태 변경
