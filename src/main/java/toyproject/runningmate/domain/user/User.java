@@ -108,7 +108,7 @@ public class User implements UserDetails {
     //양방향 편의 메서드
     public void setCrew(Crew crew) {
         this.crew = crew;
-//        crew.getUsers().add(this);        // crew에 이미 유저가 담겨서 오기때문에 양방향 제거
+//        crew.getUsers().add(this);         crew에 이미 유저가 담겨서 오기때문에 양방향 제거
     }
 
 
@@ -128,8 +128,6 @@ public class User implements UserDetails {
                 .isCrewLeader(isCrewLeader)
                 .password(password)
                 .build();
-
-
         return userDto;
     }
 
