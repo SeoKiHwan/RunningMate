@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 public class User implements UserDetails {
 
     //spring security는 UserDetails 객체를 통해 권한 정보를 관리하기 때문에
@@ -47,7 +46,7 @@ public class User implements UserDetails {
     @Column(name = "ADDRESS")
     private String address;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CREW_ID")
     private Crew crew;
 
