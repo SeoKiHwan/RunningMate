@@ -27,6 +27,7 @@ public class UserDto {
     private String nickName;
     private LocalDateTime regDate;
     private String address;
+    @JsonIgnore
     private Crew crew;
     private List<String> roles = new ArrayList<>();
     private boolean isCrewLeader;

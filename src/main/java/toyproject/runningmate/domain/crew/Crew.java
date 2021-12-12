@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import toyproject.runningmate.domain.request.RequestUserToCrew;
 import toyproject.runningmate.domain.user.User;
-import toyproject.runningmate.dto.CrewDto;
+
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -39,4 +40,7 @@ public class Crew {
     @Column(name = "CREW_NAME")
     private String crewName;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "CREW_ID")
+    private List<RequestUserToCrew> requests = new ArrayList<>();
 }

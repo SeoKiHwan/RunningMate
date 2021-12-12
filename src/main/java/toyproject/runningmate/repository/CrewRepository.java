@@ -7,6 +7,6 @@ import toyproject.runningmate.dto.CrewDto;
 import java.util.Optional;
 
 public interface CrewRepository extends JpaRepository<Crew, Long> {
-    Optional<CrewDto> findBycrewName(String crewName);
+    Optional<Crew> findBycrewName(String crewName);
 
 }
