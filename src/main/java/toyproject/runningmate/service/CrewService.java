@@ -13,6 +13,7 @@ import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.CrewRepository;
 import toyproject.runningmate.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,9 +32,9 @@ public class CrewService {
         User findUserEntity = userRepository.findById(userDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
 
-        crewDto.builder()
-                .crewLeaderId(userDto.getId())
-                .build();
+//        crewDto.builder()
+//                .crewLeaderId(userDto.getId())
+//                .build();
 
         Crew crewEntity = convertDtoToEntity(crewDto);
         findUserEntity.setCrew(crewEntity); // setCrew안 양방향은 제거
@@ -60,7 +61,7 @@ public class CrewService {
                 .crewName(crew.getCrewName())
                 .crewRegion(crew.getCrewRegion())
                 .requests(crew.getRequests())
-//                .users(crew.getUsers()) //
+                .userDtos(new ArrayList<>()) //  빈 그릇 생성
                 .build();
 
         for (User user : crew.getUsers()) {     // crewDto 빈 그릇에 담는다.
@@ -88,7 +89,7 @@ public class CrewService {
 
     public CrewDto getCrewByName(String crewName) {
 
-        Crew crew = crewRepository.findBycrewName(crewName)
+        Crew crew = crewRepository.findByCrewName(crewName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루"));
 
         return convertEntityToDto(crew);
@@ -96,7 +97,7 @@ public class CrewService {
 
     @Transactional
     public Long saveRequest(String crewName, String userNickname){
-        Crew crew = crewRepository.findBycrewName(crewName)
+        Crew crew = crewRepository.findByCrewName(crewName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루"));
 
         RequestUserToCrew request = new RequestUserToCrew(userNickname);
