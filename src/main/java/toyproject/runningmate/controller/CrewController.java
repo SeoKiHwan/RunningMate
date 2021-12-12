@@ -13,12 +13,14 @@ import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.CrewDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.CrewRepository;
+import toyproject.runningmate.repository.UserRepository;
 import toyproject.runningmate.service.CrewService;
 import toyproject.runningmate.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @RestController
@@ -45,13 +47,12 @@ public class CrewController {
 
         UserDto findUserDto = userService.getUserByToken(request);
 
-        if(findUserDto.getCrew() != null){  // User의 크루가 이미 존재하는 경우
+        if(userService.hasCrew(findUserDto)){  // User의 크루가 이미 존재하는 경우
             return ResponseEntity.ok("이미 크루가 존재합니다.");
         }
 
+
         crewService.save(findUserDto,crewDto);         // 새 크루 저장
-
-
         userService.updateCrewLeaderStatus(findUserDto.getId());    // isCrewLeader 상태 변경
 
         return new ResponseEntity("크루 생성 완료", HttpStatus.OK);
@@ -71,7 +72,7 @@ public class CrewController {
         UserDto userDto = userService.getUserByToken(request);
         CrewDto crewDto = crewService.getCrewByName(crewName);
 
-        if(userDto.getCrew() != null)
+        if(userService.hasCrew(userDto))
             return ResponseEntity.ok("이미 크루가 존재합니다.");
 
         Long requestId = crewService.saveRequest(crewDto.getCrewName(), userDto.getNickName());

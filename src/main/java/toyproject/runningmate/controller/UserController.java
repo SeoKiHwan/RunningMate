@@ -73,9 +73,7 @@ public class UserController {
      */
     @GetMapping("/mypage")
     public UserDto getMyPage(HttpServletRequest request){
-
         UserDto userDto = userService.getUserByToken(request);
-
         return userDto;
     }
 

@@ -27,24 +27,23 @@ public class UserDto {
     private String nickName;
     private LocalDateTime regDate;
     private String address;
-    @JsonIgnore
-    private Crew crew;
     private List<String> roles = new ArrayList<>();
     private boolean isCrewLeader;
 
-    public User toEntity(UserDto userDto) {
-        User user = User.builder()
-                .email(userDto.getEmail())
-                .id(userDto.getId())
-                .crew(userDto.getCrew())
-                .nickName(userDto.getNickName())
-                .regDate(userDto.getRegDate())
-                .address(userDto.getAddress())
-                .roles(userDto.getRoles())
-                .isCrewLeader(userDto.isCrewLeader())
-                .password(userDto.getPassword())
-                .build();
+    // private Crew crew; 없앰
 
-        return user;
+    public User toEntity(){
+        return User.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .nickName(nickName)
+                .regDate(regDate)
+                .address(address)
+                .roles(roles)
+                .isCrewLeader(isCrewLeader)
+                .build();
     }
+
+
 }

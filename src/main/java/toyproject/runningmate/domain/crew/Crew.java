@@ -19,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Crew {
 
-
     @Id
     @GeneratedValue
     @Column(name = "CREW_ID")

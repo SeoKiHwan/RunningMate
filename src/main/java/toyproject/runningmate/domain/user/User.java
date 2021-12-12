@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import toyproject.runningmate.domain.crew.Crew;
+import toyproject.runningmate.dto.CrewDto;
 import toyproject.runningmate.dto.UserDto;
 
 import javax.persistence.*;
@@ -105,33 +106,21 @@ public class User implements UserDetails {
     }
 
     //양방향 편의 메서드
-    public void addCrew(Crew crew) {
+    public void setCrew(Crew crew) {
         this.crew = crew;
-        crew.getUsers().add(this);
+//        crew.getUsers().add(this);        // crew에 이미 유저가 담겨서 오기때문에 양방향 제거
     }
 
-    //crew장
 
     public void setCrewLeader(boolean crewLeader) {
         isCrewLeader = crewLeader;
     }
 
-    public UserDto toDto() {
-//        UserDto userDto = UserDto.builder()
-//                .email(user.getEmail())
-//                .id(user.getId())
-//                .crew(user.getCrew())
-//                .nickName(user.getNickName())
-//                .regDate(user.getRegDate())
-//                .address(user.getAddress())
-//                .roles(user.getRoles())
-//                .isCrewLeader(user.isCrewLeader())
-//                .build();
-
+    public UserDto toDto() {        // Entity -> Dto
         UserDto userDto = UserDto.builder()
                 .email(email)
                 .id(id)
-                .crew(crew)
+//                .crew(crew)
                 .nickName(nickName)
                 .regDate(regDate)
                 .address(address)
@@ -139,6 +128,7 @@ public class User implements UserDetails {
                 .isCrewLeader(isCrewLeader)
                 .password(password)
                 .build();
+
         return userDto;
     }
 

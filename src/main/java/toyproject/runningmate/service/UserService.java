@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.user.User;
+import toyproject.runningmate.dto.CrewDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.UserRepository;
 
@@ -101,4 +102,13 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
         findUser.setCrewLeader(!findUser.isCrewLeader());
     }
+
+    public boolean hasCrew(UserDto userDto){
+        User user =userRepository.findById(userDto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+
+        if(user.getCrew() != null) return true;
+        else return false;
+    }
+
 }
