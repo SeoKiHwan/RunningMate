@@ -19,31 +19,31 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @ToString
-public class UserDto {
+
+public class LoginDto {
 
     private Long id;
     private String email;
-//    private String password;
+    private String password;
     private String nickName;
     private LocalDateTime regDate;
     private String address;
     private List<String> roles = new ArrayList<>();
     private boolean isCrewLeader;
 
-    // private Crew crew; 없앰
 
-    public User toEntity(){
-        return User.builder()
-                .id(id)
-                .email(email)
-//                .password(password)
-                .nickName(nickName)
-                .regDate(regDate)
-                .address(address)
-                .roles(roles)
-                .isCrewLeader(isCrewLeader)
+    public UserDto loginDtoToUserDto() {
+        UserDto userDto = UserDto.builder()
+                .email(getEmail())
+                .id(getId())
+//                .crew(crew)
+                .nickName(getNickName())
+                .regDate(getRegDate())
+                .address(getAddress())
+                .roles(getRoles())
+                .isCrewLeader(isCrewLeader())
                 .build();
+            return userDto;
     }
-
-
 }
+

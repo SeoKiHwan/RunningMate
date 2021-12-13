@@ -48,7 +48,9 @@ public class CrewService {
                 .build();
 
         for (User user : crew.getUsers()) {     // crewDto 빈 그릇에 담는다.
-            crewDto.getUserDtos().add(user.toDto());
+            // entity -? dto
+            // setpaswwrod("");
+            crewDto.getUserDtos().add(user.toUserDto());
         }
         return crewDto;
     }
@@ -61,10 +63,11 @@ public class CrewService {
                 .crewName(crewDto.getCrewName())
                 .crewRegion(crewDto.getCrewRegion())
                 .requests(crewDto.getRequests())
-//                .users(userDtos)
+//                .users(crewDto.getUserDtos())
                 .build();
 
         for (UserDto userDto : crewDto.getUserDtos()) { // crewDto 그릇에 담긴걸 꺼낸다
+
             crew.getUsers().add(userDto.toEntity());
         }
         return crew;
@@ -84,6 +87,7 @@ public class CrewService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루"));
 
         RequestUserToCrew request = new RequestUserToCrew(userNickname);
+
         crew.getRequests().add(request);
 
         return request.getId();

@@ -26,4 +26,8 @@ public class CrewDto {
     private List<RequestUserToCrew> requests = new ArrayList<>();
     private List<UserDto> userDtos = new ArrayList<>();         // 그릇
 
+//    void addList(UserDto userDto) {
+//        userDtos.add(userDto);
+//        userDto.set
+//    }
 }

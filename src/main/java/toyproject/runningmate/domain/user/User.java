@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import toyproject.runningmate.domain.crew.Crew;
 import toyproject.runningmate.dto.CrewDto;
+import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
 
 import javax.persistence.*;
@@ -116,8 +117,22 @@ public class User implements UserDetails {
         isCrewLeader = crewLeader;
     }
 
-    public UserDto toDto() {        // Entity -> Dto
+    public UserDto toUserDto() {        // Entity -> Dto
         UserDto userDto = UserDto.builder()
+                .email(email)
+                .id(id)
+//                .crew(crew)
+                .nickName(nickName)
+                .regDate(regDate)
+                .address(address)
+                .roles(roles)
+                .isCrewLeader(isCrewLeader)
+                .build();
+        return userDto;
+    }
+
+    public LoginDto toLoginDto() {        // Entity -> Dto
+        LoginDto loginDto = LoginDto.builder()
                 .email(email)
                 .id(id)
 //                .crew(crew)
@@ -128,7 +143,7 @@ public class User implements UserDetails {
                 .isCrewLeader(isCrewLeader)
                 .password(password)
                 .build();
-        return userDto;
+        return loginDto;
     }
 
 }

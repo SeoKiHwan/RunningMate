@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.CrewDto;
+import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.UserRepository;
 
@@ -33,9 +34,7 @@ public class UserService {
         String userEmail = jwtTokenProvider.getUserPk(token);
 
         UserDto userDto = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toDto();
-
-        userDto.setPassword("");
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toUserDto();
 
         return userDto;
     }
@@ -43,9 +42,7 @@ public class UserService {
     //닉네임에서 User 얻기
     public UserDto getUserByNickName(String nickName) {
         UserDto userDto = userRepository.findByNickName(nickName)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toDto();
-
-        userDto.setPassword("");
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toUserDto();
 
         return userDto;
     }
@@ -63,11 +60,11 @@ public class UserService {
     }
 
     //이메일에서 User 얻기
-    public UserDto getUserByEmail(String email) {
-        UserDto userDto = userRepository.findByEmail(email).
-                orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toDto();
+    public LoginDto getUserByEmail(String email) {
+        LoginDto loginDto = userRepository.findByEmail(email).
+                orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toLoginDto();
 
-        return userDto;
+        return loginDto;
     }
 
     //수정
@@ -81,13 +78,13 @@ public class UserService {
 
    //회원가입
     @Transactional
-    public Long join(UserDto userDto) {
+    public Long join(LoginDto loginDto) {
         User member = User.builder()
-                .email(userDto.getEmail())
-                .password(passwordEncoder.encode(userDto.getPassword()))
+                .email(loginDto.getEmail())
+                .password(passwordEncoder.encode(loginDto.getPassword()))
                 .roles(Collections.singletonList("ROLE_USER")) // 최초 가입시 USER 로 설정
-                .address(userDto.getAddress())
-                .nickName(userDto.getNickName())
+                .address(loginDto.getAddress())
+                .nickName(loginDto.getNickName())
                 .regDate(LocalDateTime.now())
                 .build();
 

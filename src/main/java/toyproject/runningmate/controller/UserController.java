@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.user.User;
+import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.UserRepository;
 import toyproject.runningmate.service.UserService;
@@ -32,34 +33,39 @@ public class UserController {
 
     /**
      *
-     * @param userDto
+     * @param
      * @return
      */
     //회원가입
     @PostMapping("/join")
     @Transactional
-    public Long join(@RequestBody UserDto userDto) {
-        return userService.join(userDto);
+    public Long join(@RequestBody LoginDto loginDto) {
+        return userService.join(loginDto);
     }
 
     //로그인
     //패스워드 빼고 다 달라.
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody UserDto userDto) {
+    public Map<String, Object> login(@RequestBody LoginDto loginDto) {
 
-        UserDto findUserDto = userService.getUserByEmail(userDto.getEmail());
+        LoginDto findLoginDto = userService.getUserByEmail(loginDto.getEmail());
+        //UserDto findUserDto = userService.getUserByEmail(loginDto.getEmail());
 
-        if (!passwordEncoder.matches(userDto.getPassword(), findUserDto.getPassword())) {
+        if (!passwordEncoder.matches(loginDto.getPassword(), findLoginDto.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호");
         }
 
-        String token = jwtTokenProvider.createToken(findUserDto.getEmail(), findUserDto.getRoles());
+        String token = jwtTokenProvider.createToken(findLoginDto.getEmail(), findLoginDto.getRoles());
 
-        findUserDto.setPassword("");
+        //findLoginDto -> UserDto
+        UserDto userDto = findLoginDto.loginDtoToUserDto();
 
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("token", token);
-        userInfo.put("userDto", findUserDto);
+        userInfo.put("userDto", userDto);
+
+        //loginDto -> userDto
+        //프론트한테 줘야겟죠?
 
         return userInfo;
     }
