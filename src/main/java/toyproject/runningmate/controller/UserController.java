@@ -28,7 +28,6 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
     private final UserService userService;
 
     /**

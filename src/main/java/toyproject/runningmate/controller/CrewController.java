@@ -11,6 +11,7 @@ import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.crew.Crew;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.CrewDto;
+import toyproject.runningmate.dto.CrewPageResponseDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.CrewRepository;
 import toyproject.runningmate.repository.UserRepository;
@@ -60,10 +61,19 @@ public class CrewController {
 
     // 크루 상세 페이지
     @GetMapping("/crew/{crewName}")
-    public CrewDto getCrewPage(@RequestParam("crewName") String crewName){
+    public CrewPageResponseDto getCrewPage(@RequestParam("crewName") String crewName){
         CrewDto crewDto = crewService.getCrewByName(crewName);
 
-        return crewDto;
+        // 리더 nickName 가져오기
+        UserDto crewLeaderDto = userService.getUserById(crewDto.getCrewLeaderId());
+
+        return CrewPageResponseDto.builder()
+                .openChat(crewDto.getOpenChat())
+                .crewRegion(crewDto.getCrewRegion())
+                .crewName(crewDto.getCrewName())
+                .crewLeaderName(crewLeaderDto.getNickName())
+                .crewMembers(crewService.getCrewMembersByCrewName(crewName))
+                .build();
     }
 
     // 크루 신청하기

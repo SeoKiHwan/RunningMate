@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 import toyproject.runningmate.domain.request.RequestUserToCrew;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.CrewDto;
+import toyproject.runningmate.dto.UserDto;
 
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 @Entity
@@ -52,6 +54,14 @@ public class Crew {
                 .openChat(openChat)
                 .crewName(crewName)
                 .build();
+    }
+
+
+    // userEntityList -> userDtoList
+    public List<UserDto> userEntityListToDtoList(){
+        return users.stream()
+                .map(User::toUserDto)
+                .collect(Collectors.toList());
     }
 
 

@@ -23,6 +23,7 @@ public class CrewDto {
     private String crewRegion;
     private String openChat;
     private String crewName;
+    private List<UserDto> userDtos = new ArrayList<>();
 
     public Crew toEntity(){
         return Crew.builder()
@@ -31,6 +32,7 @@ public class CrewDto {
                 .crewRegion(crewRegion)
                 .openChat(openChat)
                 .crewName(crewName)
+                .users(new ArrayList<>())
                 .build();
     }
 

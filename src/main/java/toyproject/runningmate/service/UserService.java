@@ -27,6 +27,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+
+
+    public UserDto getUserById(Long userDtoId){
+        UserDto userDto = userRepository.findById(userDtoId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toUserDto();
+
+        return userDto;
+    }
+
+
     //토큰에서 User 추출
     public UserDto getUserByToken(HttpServletRequest request) {
 

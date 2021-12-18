@@ -1,10 +1,7 @@
 package toyproject.runningmate.dto;
-
-
-
-
 import lombok.*;
-import toyproject.runningmate.domain.request.RequestUserToCrew;
+import toyproject.runningmate.domain.user.User;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +17,7 @@ public class CrewPageResponseDto {
     private String openChat;
     private String crewName;
 
-    private List<UserDto> userDtos = new ArrayList<>();
-    private List<RequestUserToCrew> requestUserToCrews = new ArrayList<>(); // 크루장만 확인가능
-
-
-
+    private List<UserDto> crewMembers = new ArrayList<>();
+//    private List<UserDto> requestUserDtos = new ArrayList<>();
 
 }

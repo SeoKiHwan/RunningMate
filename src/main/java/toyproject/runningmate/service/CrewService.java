@@ -13,6 +13,7 @@ import toyproject.runningmate.repository.CrewRepository;
 import toyproject.runningmate.repository.UserRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -44,6 +45,14 @@ public class CrewService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루"));
 
         return crew.toDto();
+    }
+
+
+    public List<UserDto> getCrewMembersByCrewName(String crewName){
+        Crew crew = crewRepository.findByCrewName(crewName)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루"));
+
+        return crew.userEntityListToDtoList();
     }
 
     @Transactional
