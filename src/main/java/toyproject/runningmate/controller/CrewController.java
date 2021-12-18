@@ -61,8 +61,8 @@ public class CrewController {
     // 크루 상세 페이지
     @GetMapping("/crew/{crewName}")
     public CrewDto getCrewPage(@RequestParam("crewName") String crewName){
-        System.out.println("crewName = " + crewName);
         CrewDto crewDto = crewService.getCrewByName(crewName);
+
         return crewDto;
     }
 

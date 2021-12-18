@@ -11,10 +11,10 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
 @AllArgsConstructor
 public class CrewDto {
 
@@ -23,11 +23,16 @@ public class CrewDto {
     private String crewRegion;
     private String openChat;
     private String crewName;
-    private List<RequestUserToCrew> requests = new ArrayList<>();
-    private List<UserDto> userDtos = new ArrayList<>();         // 그릇
 
-//    void addList(UserDto userDto) {
-//        userDtos.add(userDto);
-//        userDto.set
-//    }
+    public Crew toEntity(){
+        return Crew.builder()
+                .id(id)
+                .crewLeaderId(crewLeaderId)
+                .crewRegion(crewRegion)
+                .openChat(openChat)
+                .crewName(crewName)
+                .build();
+    }
+
+
 }

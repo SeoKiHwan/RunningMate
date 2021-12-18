@@ -6,14 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import toyproject.runningmate.domain.request.RequestUserToCrew;
 import toyproject.runningmate.domain.user.User;
+import toyproject.runningmate.dto.CrewDto;
 
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Builder
+@Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,7 +40,20 @@ public class Crew {
     @Column(name = "CREW_NAME")
     private String crewName;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "CREW_ID")
+    @OneToMany(cascade = CascadeType.ALL , orphanRemoval = true)
     private List<RequestUserToCrew> requests = new ArrayList<>();
+
+
+    public CrewDto toDto(){
+        return CrewDto.builder()
+                .id(id)
+                .crewLeaderId(crewLeaderId)
+                .crewRegion(crewRegion)
+                .openChat(openChat)
+                .crewName(crewName)
+                .build();
+    }
+
+
+
 }

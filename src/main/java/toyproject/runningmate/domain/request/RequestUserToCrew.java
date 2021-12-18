@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import toyproject.runningmate.domain.crew.Crew;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Entity
 @Getter
@@ -27,5 +27,10 @@ public class RequestUserToCrew {
 
     public RequestUserToCrew(String nickName) {
         this.nickName = nickName;
+        System.out.println("this.getId() = " + this.getId());
     }
+
+    
+
+
 }

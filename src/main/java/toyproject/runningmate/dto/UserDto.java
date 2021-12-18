@@ -20,17 +20,14 @@ import java.util.List;
 @Builder
 @ToString
 public class UserDto {
-
+// Password , Crew 필드 삭제
     private Long id;
     private String email;
-//    private String password;
     private String nickName;
     private LocalDateTime regDate;
     private String address;
     private List<String> roles = new ArrayList<>();
     private boolean isCrewLeader;
-
-    // private Crew crew; 없앰
 
     public User toEntity(){
         return User.builder()

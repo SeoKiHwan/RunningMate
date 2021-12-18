@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import toyproject.runningmate.domain.crew.Crew;
+import toyproject.runningmate.domain.friends.Friend;
 import toyproject.runningmate.dto.CrewDto;
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
@@ -54,6 +55,9 @@ public class User implements UserDetails {
 
     @Column(name = "IS_CREW_LEADER")
     private boolean isCrewLeader;
+
+    @OneToMany(mappedBy = "fromUser",fetch = FetchType.LAZY)
+    private List<Friend> friends = new ArrayList<>();
 
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -109,13 +113,21 @@ public class User implements UserDetails {
     //양방향 편의 메서드
     public void setCrew(Crew crew) {
         this.crew = crew;
-//        crew.getUsers().add(this);         crew에 이미 유저가 담겨서 오기때문에 양방향 제거
+        crew.getUsers().add(this);
     }
-
 
     public void setCrewLeader(boolean crewLeader) {
         isCrewLeader = crewLeader;
     }
+
+    public void addFriend(Friend friend){
+        this.friends.add(friend);
+        if(friend.getFromUser() != this){
+            friend.setUser(this);
+        }
+
+    }
+
 
     public UserDto toUserDto() {        // Entity -> Dto
         UserDto userDto = UserDto.builder()
