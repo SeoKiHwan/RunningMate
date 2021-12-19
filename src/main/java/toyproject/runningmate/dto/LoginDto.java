@@ -16,10 +16,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Setter
-@AllArgsConstructor
-@Builder
-@ToString
-
 public class LoginDto {
 
     private Long id;
@@ -31,12 +27,22 @@ public class LoginDto {
     private List<String> roles = new ArrayList<>();
     private boolean isCrewLeader;
 
+    @Builder
+    public LoginDto(Long id, String email, String password, String nickName, LocalDateTime regDate, String address, List<String> roles, boolean isCrewLeader) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.nickName = nickName;
+        this.regDate = regDate;
+        this.address = address;
+        this.roles = roles;
+        this.isCrewLeader = isCrewLeader;
+    }
 
     public UserDto loginDtoToUserDto() {
         UserDto userDto = UserDto.builder()
                 .email(getEmail())
                 .id(getId())
-//                .crew(crew)
                 .nickName(getNickName())
                 .regDate(getRegDate())
                 .address(getAddress())

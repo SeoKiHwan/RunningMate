@@ -16,27 +16,32 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Setter
-@AllArgsConstructor
-@Builder
-@ToString
 public class UserDto {
 
     private Long id;
     private String email;
-//    private String password;
     private String nickName;
     private LocalDateTime regDate;
     private String address;
     private List<String> roles = new ArrayList<>();
     private boolean isCrewLeader;
 
-    // private Crew crew; 없앰
+    private String crewName;
+
+    @Builder
+    public UserDto(Long id, String email, String nickName, LocalDateTime regDate, String address, List<String> roles, boolean isCrewLeader) {
+        this.id = id;
+        this.email = email;
+        this.nickName = nickName;
+        this.regDate = regDate;
+        this.address = address;
+        this.roles = roles;
+        this.isCrewLeader = isCrewLeader;
+    }
 
     public User toEntity(){
         return User.builder()
-                .id(id)
                 .email(email)
-//                .password(password)
                 .nickName(nickName)
                 .regDate(regDate)
                 .address(address)

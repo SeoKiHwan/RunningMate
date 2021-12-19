@@ -14,8 +14,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
-@AllArgsConstructor
 public class CrewDto {
 
     private Long id;
@@ -23,11 +21,23 @@ public class CrewDto {
     private String crewRegion;
     private String openChat;
     private String crewName;
-    private List<RequestUserToCrew> requests = new ArrayList<>();
     private List<UserDto> userDtos = new ArrayList<>();         // 그릇
 
-//    void addList(UserDto userDto) {
-//        userDtos.add(userDto);
-//        userDto.set
-//    }
+    @Builder
+    public CrewDto(Long id, Long crewLeaderId, String crewRegion, String openChat, String crewName) {
+        this.id = id;
+        this.crewLeaderId = crewLeaderId;
+        this.crewRegion = crewRegion;
+        this.openChat = openChat;
+        this.crewName = crewName;
+    }
+
+    public Crew toEntity(){
+        return Crew.builder()
+                .crewLeaderId(crewLeaderId)
+                .crewRegion(crewRegion)
+                .openChat(openChat)
+                .crewName(crewName)
+                .build();
+    }
 }

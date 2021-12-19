@@ -52,6 +52,8 @@ public class CrewController {
             return ResponseEntity.ok("이미 크루가 존재합니다.");
         }
 
+        System.out.println("findUserDto = " + findUserDto);
+
         crewService.save(findUserDto,crewDto);         // 새 크루 저장
         userService.updateCrewLeaderStatus(findUserDto.getId());    // isCrewLeader 상태 변경
 
@@ -63,33 +65,7 @@ public class CrewController {
     public CrewDto getCrewPage(@RequestParam("crewName") String crewName){
         System.out.println("crewName = " + crewName);
         CrewDto crewDto = crewService.getCrewByName(crewName);
+        crewDto.setUserDtos(crewService.getCrewMembersByCrewName(crewName));
         return crewDto;
     }
-
-    // 크루 신청하기
-    @PostMapping("/crew/{crewName}")
-    public ResponseEntity registCrew(HttpServletRequest request, @RequestParam String crewName) {
-        UserDto userDto = userService.getUserByToken(request);
-        CrewDto crewDto = crewService.getCrewByName(crewName);
-
-        if(userService.hasCrew(userDto))
-            return ResponseEntity.ok("이미 크루가 존재합니다.");
-
-        Long requestId = crewService.saveRequest(crewDto.getCrewName(), userDto.getNickName());
-        System.out.println("requestId = " + requestId);
-
-        if(requestId == null)
-            return ResponseEntity.ok("크루 신청 실패");
-
-        return ResponseEntity.ok("크루 신청 완료");
-    }
-
-
-
-
-
-
-
-
-
 }
