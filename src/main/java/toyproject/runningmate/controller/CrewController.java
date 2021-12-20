@@ -68,4 +68,45 @@ public class CrewController {
         crewDto.setUserDtos(crewService.getCrewMembersByCrewName(crewName));
         return crewDto;
     }
+
+    //크루 신청 버튼 눌렀을 때
+    @PostMapping("/crew/{crewName}")
+    public Long registCrew(HttpServletRequest request, @RequestParam String crewName) {
+        UserDto findUserDto = userService.getUserByToken(request);
+
+        if(userService.hasCrew(findUserDto))
+            throw new IllegalArgumentException("이미 크루가 존재한다.");
+
+        CrewDto crewDto = crewService.getCrewByName(crewName);
+
+        Long requestId = crewService.saveRequest(findUserDto, crewDto);
+
+        return requestId;
+    }
+
+    @DeleteMapping("/crew/request/{nickName}")
+    public ResponseEntity reject(@RequestParam String nickName) {
+        crewService.rejectUser(nickName);
+
+        return ResponseEntity.ok("삭제 완료");
+    }
+
+    @PostMapping("/crew/request/{nickName}")
+    public ResponseEntity admit(@RequestParam String nickName){
+
+        crewService.addmitUser(nickName);
+
+        crewService.rejectUser(nickName);
+
+        return ResponseEntity.ok("추가 완료");
+    }
+
+    //크루 삭제
+
+    //요청 리스트 던져주는거 -> getRequestList
+
+    //크루 삭제하면 요청도 같이 삭제되는지 확인
+
+    //페이징
+
 }

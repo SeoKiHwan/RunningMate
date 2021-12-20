@@ -3,6 +3,7 @@ package toyproject.runningmate.domain.crew;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import toyproject.runningmate.domain.request.RequestUserToCrew;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.CrewDto;
 import toyproject.runningmate.dto.UserDto;
@@ -38,6 +39,9 @@ public class Crew {
     @Column(name = "CREW_NAME", nullable = false, unique = true)
     private String crewName;
 
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<RequestUserToCrew> requests = new ArrayList<>();
+
     @Builder
     public Crew(Long crewLeaderId, String crewRegion, String openChat, String crewName) {
         this.crewLeaderId = crewLeaderId;
@@ -54,7 +58,6 @@ public class Crew {
                 .openChat(openChat)
                 .crewName(crewName)
                 .build();
-
     }
 
     public List<UserDto> userEntityListToDtoList(){
