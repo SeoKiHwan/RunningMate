@@ -98,6 +98,9 @@ public class UserService {
                 .regDate(LocalDateTime.now())
                 .build();
 
+        System.out.println("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        System.out.println("member.getId() = " + member.getId());
+
         userRepository.save(member);
 
         return member.getId();

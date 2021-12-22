@@ -1,23 +1,22 @@
 package toyproject.runningmate.domain.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import toyproject.runningmate.domain.crew.Crew;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Entity
 @Getter
+@Builder
+@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class RequestUserToCrew {
 
-    @Id
+    @Id @NonNull
     @GeneratedValue
     @Column(name = "REQUEST_ID")
     private Long id;
@@ -25,12 +24,16 @@ public class RequestUserToCrew {
     @Column(name="NICKNAME")
     private String nickName;
 
-    public RequestUserToCrew(String nickName) {
-        this.nickName = nickName;
-        System.out.println("this.getId() = " + this.getId());
+    @ManyToOne
+    @JoinColumn(name = "CREW_ID")
+    private Crew crew;
+
+    public RequestUserToCrew(String nickName){
+        this.nickName=nickName;
     }
 
-    
-
-
+    public void setCrew(Crew crew) {
+        this.crew=crew;
+        if(!crew.getRequests().contains(this)) crew.getRequests().add(this);
+    }
 }

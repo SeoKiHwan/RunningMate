@@ -32,7 +32,7 @@ public class User implements UserDetails {
     //Entity와 UserDetails는 구분할 수도 같은 클래스에서 관리할 수도 있다.
     //여기에서는 같은 클래스에서 관리하는 방법을 사용
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "EMAIL")
@@ -58,7 +58,6 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "fromUser",fetch = FetchType.LAZY)
     private List<Friend> friends = new ArrayList<>();
-
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
@@ -127,7 +126,6 @@ public class User implements UserDetails {
         }
 
     }
-
 
     public UserDto toUserDto() {        // Entity -> Dto
         UserDto userDto = UserDto.builder()

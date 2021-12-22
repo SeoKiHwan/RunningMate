@@ -8,8 +8,10 @@ import toyproject.runningmate.domain.user.User;
 
 import javax.persistence.Column;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Builder
 @Getter
@@ -23,7 +25,6 @@ public class CrewDto {
     private String crewRegion;
     private String openChat;
     private String crewName;
-    private List<UserDto> userDtos = new ArrayList<>();
 
     public Crew toEntity(){
         return Crew.builder()

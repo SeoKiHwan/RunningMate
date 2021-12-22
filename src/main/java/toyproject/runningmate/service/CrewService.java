@@ -24,6 +24,7 @@ public class CrewService {
     private final CrewRepository crewRepository;
     private final UserRepository userRepository;
     private final RequestService requestService;
+
     @Transactional
     public Long save(UserDto userDto, CrewDto crewDto) { // Dto로 받아서
 
@@ -32,7 +33,6 @@ public class CrewService {
 
         // crewDto의 crewLeaderId 설정
         crewDto.setCrewLeaderId(userDto.getId());
-
         Crew crew = crewDto.toEntity();
         user.setCrew(crew); // 연관관계 편의 메서드
         return crewRepository.save(crew).getId();  // Entity로 저장
@@ -61,8 +61,9 @@ public class CrewService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루"));
 
         RequestUserToCrew request = new RequestUserToCrew(userNickname);    // request.getId() NULL 발생
-        crew.getRequests().add(request);
-        crewRepository.save(crew);
+
+        crew.addRequest(request);
+        requestService.save(request);
         return request.getId();
     }
 

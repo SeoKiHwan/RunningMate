@@ -31,7 +31,6 @@ public class LoginDto {
     private List<String> roles = new ArrayList<>();
     private boolean isCrewLeader;
 
-
     public UserDto loginDtoToUserDto() {
         UserDto userDto = UserDto.builder()
                 .email(getEmail())

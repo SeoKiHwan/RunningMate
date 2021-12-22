@@ -17,7 +17,7 @@ public class CrewPageResponseDto {
     private String openChat;
     private String crewName;
 
-    private List<UserDto> crewMembers = new ArrayList<>();
+    private List<UserDto> userDtos= new ArrayList<>();
 //    private List<UserDto> requestUserDtos = new ArrayList<>();
 
 }

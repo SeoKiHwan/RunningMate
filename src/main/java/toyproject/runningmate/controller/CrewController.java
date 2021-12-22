@@ -72,7 +72,7 @@ public class CrewController {
                 .crewRegion(crewDto.getCrewRegion())
                 .crewName(crewDto.getCrewName())
                 .crewLeaderName(crewLeaderDto.getNickName())
-                .crewMembers(crewService.getCrewMembersByCrewName(crewName))
+                .userDtos(crewService.getCrewMembersByCrewName(crewName))
                 .build();
     }
 
@@ -86,7 +86,6 @@ public class CrewController {
             return ResponseEntity.ok("이미 크루가 존재합니다.");
 
         Long requestId = crewService.saveRequest(crewDto.getCrewName(), userDto.getNickName());
-        System.out.println("requestId = " + requestId);
 
         if(requestId == null)
             return ResponseEntity.ok("크루 신청 실패");

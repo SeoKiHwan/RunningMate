@@ -11,6 +11,7 @@ import toyproject.runningmate.dto.UserDto;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,9 +43,8 @@ public class Crew {
     @Column(name = "CREW_NAME")
     private String crewName;
 
-    @OneToMany(cascade = CascadeType.ALL , orphanRemoval = true)
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL , orphanRemoval = true)
     private List<RequestUserToCrew> requests = new ArrayList<>();
-
 
     public CrewDto toDto(){
         return CrewDto.builder()
@@ -64,6 +64,10 @@ public class Crew {
                 .collect(Collectors.toList());
     }
 
+    public void addRequest(RequestUserToCrew requestUserToCrew){
+        this.requests.add(requestUserToCrew);
+        if(requestUserToCrew.getCrew() != this) requestUserToCrew.setCrew(this);
+    }
 
 
 }
