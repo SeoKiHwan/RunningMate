@@ -16,9 +16,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Setter
-@AllArgsConstructor
-@Builder
-@ToString
 public class UserDto {
 // Password , Crew 필드 삭제
     private Long id;
@@ -29,11 +26,21 @@ public class UserDto {
     private List<String> roles = new ArrayList<>();
     private boolean isCrewLeader;
 
+    private String crewName;
+
+    @Builder
+    public UserDto(Long id, String email, String nickName, LocalDateTime regDate, String address, List<String> roles, boolean isCrewLeader) {
+        this.id = id;
+        this.email = email;
+        this.nickName = nickName;
+        this.regDate = regDate;
+        this.address = address;
+        this.roles = roles;
+        this.isCrewLeader = isCrewLeader;
+    }
     public User toEntity(){
         return User.builder()
-                .id(id)
                 .email(email)
-//                .password(password)
                 .nickName(nickName)
                 .regDate(regDate)
                 .address(address)

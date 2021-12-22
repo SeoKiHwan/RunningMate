@@ -1,6 +1,5 @@
 package toyproject.runningmate.domain.crew;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,11 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Builder
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Crew {
 
     @Id
@@ -34,19 +31,27 @@ public class Crew {
     @Column(name = "CREW_LEADER_ID")
     private Long crewLeaderId;
 
-    @Column(name = "CREW_REGION")
+    @Column(name = "CREW_REGION", nullable = false)
     private String crewRegion;
 
-    @Column(name = "OPEN_CHAT")
+    @Column(name = "OPEN_CHAT", nullable = false)
     private String openChat;
 
-    @Column(name = "CREW_NAME")
+    @Column(name = "CREW_NAME", nullable = false, unique = true)
     private String crewName;
 
-    @OneToMany(mappedBy = "crew", cascade = CascadeType.ALL , orphanRemoval = true)
+    @OneToMany(mappedBy = "crew", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<RequestUserToCrew> requests = new ArrayList<>();
 
-    public CrewDto toDto(){
+    @Builder
+    public Crew(Long crewLeaderId, String crewRegion, String openChat, String crewName) {
+        this.crewLeaderId = crewLeaderId;
+        this.crewRegion = crewRegion;
+        this.openChat = openChat;
+        this.crewName = crewName;
+    }
+
+    public CrewDto toCrewDto() {
         return CrewDto.builder()
                 .id(id)
                 .crewLeaderId(crewLeaderId)
@@ -55,19 +60,10 @@ public class Crew {
                 .crewName(crewName)
                 .build();
     }
-
-
-    // userEntityList -> userDtoList
     public List<UserDto> userEntityListToDtoList(){
         return users.stream()
                 .map(User::toUserDto)
                 .collect(Collectors.toList());
     }
-
-    public void addRequest(RequestUserToCrew requestUserToCrew){
-        this.requests.add(requestUserToCrew);
-        if(requestUserToCrew.getCrew() != this) requestUserToCrew.setCrew(this);
-    }
-
 
 }

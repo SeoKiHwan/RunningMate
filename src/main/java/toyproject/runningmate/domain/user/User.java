@@ -1,15 +1,12 @@
 package toyproject.runningmate.domain.user;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import toyproject.runningmate.domain.crew.Crew;
-import toyproject.runningmate.domain.friends.Friend;
-import toyproject.runningmate.dto.CrewDto;
+
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
 
@@ -23,8 +20,6 @@ import java.util.stream.Collectors;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class User implements UserDetails {
 
     //spring security는 UserDetails 객체를 통해 권한 정보를 관리하기 때문에
@@ -35,18 +30,18 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
     private String password;
 
-    @Column(name = "NICK_NAME")
+    @Column(name = "NICK_NAME", nullable = false, unique = true)
     private String nickName;
 
     @Column(name = "REG_DATE")
     private LocalDateTime regDate;
 
-    @Column(name = "ADDRESS")
+    @Column(name = "ADDRESS", nullable = false)
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -56,11 +51,7 @@ public class User implements UserDetails {
     @Column(name = "IS_CREW_LEADER")
     private boolean isCrewLeader;
 
-    @OneToMany(mappedBy = "fromUser",fetch = FetchType.LAZY)
-    private List<Friend> friends = new ArrayList<>();
-
     @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
     private List<String> roles = new ArrayList<>();
 
     @Override
@@ -70,6 +61,18 @@ public class User implements UserDetails {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
+
+    @Builder
+    public User(String email, String password, String nickName, LocalDateTime regDate, String address, boolean isCrewLeader, List<String> roles) {
+        this.email = email;
+        this.password = password;
+        this.nickName = nickName;
+        this.regDate = regDate;
+        this.address = address;
+        this.isCrewLeader = isCrewLeader;
+        this.roles = roles;
+    }
+
 
     //이 메서드를 통해 spring security에서 사용하는 username을 가져간다.
     //우리는 email을 사용한다.
@@ -110,7 +113,7 @@ public class User implements UserDetails {
     }
 
     //양방향 편의 메서드
-    public void setCrew(Crew crew) {
+    public void addCrew(Crew crew) {
         this.crew = crew;
         crew.getUsers().add(this);
     }
@@ -119,33 +122,28 @@ public class User implements UserDetails {
         isCrewLeader = crewLeader;
     }
 
-    public void addFriend(Friend friend){
-        this.friends.add(friend);
-        if(friend.getFromUser() != this){
-            friend.setUser(this);
-        }
-
-    }
-
-    public UserDto toUserDto() {        // Entity -> Dto
+    public UserDto toUserDto() {        // Entity -> UserDto
         UserDto userDto = UserDto.builder()
-                .email(email)
                 .id(id)
-//                .crew(crew)
+                .email(email)
                 .nickName(nickName)
                 .regDate(regDate)
                 .address(address)
                 .roles(roles)
                 .isCrewLeader(isCrewLeader)
                 .build();
+
+        if(crew != null){
+            userDto.setCrewName(crew.getCrewName());
+        }
+
         return userDto;
     }
 
-    public LoginDto toLoginDto() {        // Entity -> Dto
+    public LoginDto toLoginDto() {        // Entity -> LoginDto
         LoginDto loginDto = LoginDto.builder()
-                .email(email)
                 .id(id)
-//                .crew(crew)
+                .email(email)
                 .nickName(nickName)
                 .regDate(regDate)
                 .address(address)

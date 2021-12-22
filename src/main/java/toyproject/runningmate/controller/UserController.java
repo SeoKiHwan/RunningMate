@@ -48,7 +48,6 @@ public class UserController {
     public Map<String, Object> login(@RequestBody LoginDto loginDto) {
 
         LoginDto findLoginDto = userService.getUserByEmail(loginDto.getEmail());
-        //UserDto findUserDto = userService.getUserByEmail(loginDto.getEmail());
 
         if (!passwordEncoder.matches(loginDto.getPassword(), findLoginDto.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호");
@@ -135,17 +134,17 @@ public class UserController {
      * BE에선 닉네임을 비교하여 같으면 mypage, 다르면 현재 선택한 정보 조회
      **/
     @GetMapping("/user/{nickName}")
-    public Object getOtherUser(HttpServletRequest request, @RequestParam String nickName) {
+    public ResponseEntity<UserDto> getOtherUser(HttpServletRequest request, @RequestParam String nickName) {
         UserDto userDto = userService.getUserByToken(request);
 
         if(userDto.getNickName().equals(nickName)){
             //같으면 mypage로 redirect
-            return HttpStatus.FOUND;
+            return ResponseEntity.ok(userDto);
         }
 
         UserDto findMemberDto = userService.getUserByNickName(nickName);
 
-        return findMemberDto;
+        return ResponseEntity.ok().body(findMemberDto);
     }
 
 

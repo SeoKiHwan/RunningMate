@@ -17,7 +17,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CrewDto {
 
     private Long id;
@@ -25,17 +24,23 @@ public class CrewDto {
     private String crewRegion;
     private String openChat;
     private String crewName;
+    private List<UserDto> userDtos = new ArrayList<>();         // 그릇
+
+    @Builder
+    public CrewDto(Long id, Long crewLeaderId, String crewRegion, String openChat, String crewName) {
+        this.id = id;
+        this.crewLeaderId = crewLeaderId;
+        this.crewRegion = crewRegion;
+        this.openChat = openChat;
+        this.crewName = crewName;
+    }
 
     public Crew toEntity(){
         return Crew.builder()
-                .id(id)
                 .crewLeaderId(crewLeaderId)
                 .crewRegion(crewRegion)
                 .openChat(openChat)
                 .crewName(crewName)
-                .users(new ArrayList<>())
                 .build();
     }
-
-
 }
