@@ -2,6 +2,8 @@ package toyproject.runningmate.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +16,11 @@ import toyproject.runningmate.repository.CrewRepository;
 import toyproject.runningmate.repository.RequestRepository;
 import toyproject.runningmate.repository.UserRepository;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -26,6 +31,7 @@ public class CrewService {
     private final CrewRepository crewRepository;
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
+    private final EntityManager em;
 
     @Transactional
     public Long save(UserDto userDto, CrewDto crewDto) { // Dto로 받아서
@@ -47,6 +53,10 @@ public class CrewService {
 
         Crew crew = crewRepository.findByCrewName(crewName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루"));
+
+        if(crew.isDeleteFlag()){
+            throw new IllegalArgumentException("이미 삭제된 크루입니다");
+        }
 
         return crew.toCrewDto();
     }
@@ -115,5 +125,79 @@ public class CrewService {
 
         return requests;
     }
+
+    //크루 삭제면 UserDto에 있는 crewName, User에 있는 isCrewLeader 변경
+    @Transactional
+    public void deleteCrew(String crewName) {
+        Crew deleteCrew = crewRepository.findByCrewName(crewName)
+                .orElseThrow(() -> new IllegalArgumentException("존재X"));
+
+        Long crewLeaderId = deleteCrew.getCrewLeaderId();
+        User leader = userRepository.findById(crewLeaderId)
+                .orElseThrow(() -> new IllegalArgumentException("존재X"));
+
+        leader.setCrewLeader(!leader.isCrewLeader());
+        deleteCrew.setDeleteFlag(true);
+        deleteCrew.changeCrewName("DUMMYCREWNAME" + deleteCrew.getId());
+
+        //크루 멤버들의 crew 연관관계를 깨야함
+        for (User user : deleteCrew.getUsers()) {
+            user.deleteCrew();
+        }
+
+        deleteCrew.getRequests().clear();
+    }
+
+    //위임 현재 유저(토큰가지고 있는 얘가 리더), 파라미터로 들어오는 얘가 리더가 될 얘
+    @Transactional
+    public void changeCrewLeader(String leaderName, String userName) {
+        User leader = userRepository.findByNickName(leaderName)
+                .orElseThrow(() -> new IllegalArgumentException("존재X"));
+        User user = userRepository.findByNickName(userName)
+                .orElseThrow(() -> new IllegalArgumentException("존재X"));
+
+        leader.setCrewLeader(false);
+        user.setCrewLeader(true);
+
+        String crewName = user.getCrew().getCrewName();
+
+        Crew crew = crewRepository.findByCrewName(crewName)
+                .orElseThrow(() -> new IllegalArgumentException("존재X"));
+
+        crew.changeCrewLeaderId(user.getId());
+    }
+
+    //crewName 변경
+    @Transactional
+    public void changeCrewName(String crewName, String newName) {
+        Crew crew = crewRepository.findByCrewName(crewName)
+                .orElseThrow(() -> new IllegalArgumentException("존재X"));
+
+        List<Crew> duplicated = em.createQuery("select c from Crew c where c.crewName = :newName", Crew.class)
+                .setParameter("newName", newName)
+                .getResultList();
+
+        if(duplicated.size() > 0){
+            throw new IllegalStateException("이미 존재하는 이름입니다");
+        }
+
+        crew.changeCrewName(newName);
+    }
+
+    @Transactional
+    public void changeMember(String userName){
+        User user = userRepository.findByNickName(userName)
+                .orElseThrow(() -> new IllegalArgumentException("존재X"));
+
+        user.deleteCrew();
+
+    }
+
+    public List<CrewDto> findByPage(PageRequest pageRequest) {
+        return crewRepository.findAll(pageRequest).stream()
+                .map(Crew::toCrewDto)
+                .collect(Collectors.toList());
+    }
+
 
 }

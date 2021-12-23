@@ -21,15 +21,18 @@ public class CrewDto {
     private String crewRegion;
     private String openChat;
     private String crewName;
-    private List<UserDto> userDtos = new ArrayList<>();         // 그릇
+    private String explanation;
+    private List<UserDto> userDtos = new ArrayList<>();
+    private List<String> requestUsers= new ArrayList<>();
 
     @Builder
-    public CrewDto(Long id, Long crewLeaderId, String crewRegion, String openChat, String crewName) {
+    public CrewDto(Long id, Long crewLeaderId, String crewRegion, String openChat, String crewName, String explanation) {
         this.id = id;
         this.crewLeaderId = crewLeaderId;
         this.crewRegion = crewRegion;
         this.openChat = openChat;
         this.crewName = crewName;
+        this.explanation = explanation;
     }
 
     public Crew toEntity(){
@@ -38,6 +41,7 @@ public class CrewDto {
                 .crewRegion(crewRegion)
                 .openChat(openChat)
                 .crewName(crewName)
+                .explanation(explanation)
                 .build();
     }
 }
