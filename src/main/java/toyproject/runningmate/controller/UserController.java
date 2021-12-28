@@ -28,22 +28,24 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
     private final UserService userService;
 
     /**
+     *회원가입
      *
-     * @param
-     * @return
      */
-    //회원가입
     @PostMapping("/join")
     @Transactional
     public Long join(@RequestBody LoginDto loginDto) {
         return userService.join(loginDto);
     }
 
-    //로그인
-    //패스워드 빼고 다 달라.
+    /**
+     * 로그인
+     *
+     * 토큰 + userDto
+     */
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody LoginDto loginDto) {
 
@@ -55,25 +57,21 @@ public class UserController {
 
         String token = jwtTokenProvider.createToken(findLoginDto.getEmail(), findLoginDto.getRoles());
 
-        //findLoginDto -> UserDto
         UserDto userDto = findLoginDto.loginDtoToUserDto();
 
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("token", token);
         userInfo.put("userDto", userDto);
 
-        //loginDto -> userDto
-        //프론트한테 줘야겟죠?
-
         return userInfo;
     }
 
     /**
+     * 마이페이지
+     *
      * 로그인 시
      * FE에서 토큰 주고
-     * 유저 정보
-     * @param request
-     * @return
+     * BE에서 userDto(유저 정보)
      */
     @GetMapping("/mypage")
     public UserDto getMyPage(HttpServletRequest request){
@@ -82,14 +80,14 @@ public class UserController {
     }
 
     /**
+     * 회원 삭제
+     *
      * FE에서 닉네임을 줌
      * BE에서 닉네임으로 유저 찾고 삭제
      *
-     * @param nickName
-     * @return
      */
     @DeleteMapping("/user/{nickName}")
-    public ResponseEntity<String> deleteUser(@RequestParam String nickName) {
+    public ResponseEntity<String> deleteUser(@PathVariable("nickName") String nickName) {
 
         Long findUserId = userService.getUserByNickName(nickName).getId();
 
@@ -99,16 +97,12 @@ public class UserController {
     }
 
     /**
-     * 주소나 닉네임 변경
+     * 회원 정보 수정 ( 닉네임 또는 이메일)
      *
      * FE에서 토큰, 변경할 nickName, address
      * BE에서 수정
      *
-     * @param request
-     * @param userDto
-     * @return
      */
-    @Transactional
     @PostMapping("/user/{nickName}")
     public ResponseEntity<String> updateUser(HttpServletRequest request,  @RequestBody UserDto userDto) {
 
@@ -119,7 +113,7 @@ public class UserController {
             return new ResponseEntity<>("중복된 닉네임입니다.", HttpStatus.CONFLICT);
         }
         //바꿀 값
-        userService.updateUser(findUserDto.getId(), userDto);
+        userService.updateUser(findUserDto.getNickName(), userDto);
 
         return ResponseEntity.ok("수정 완료");
     }
@@ -134,7 +128,7 @@ public class UserController {
      * BE에선 닉네임을 비교하여 같으면 mypage, 다르면 현재 선택한 정보 조회
      **/
     @GetMapping("/user/{nickName}")
-    public ResponseEntity<UserDto> getOtherUser(HttpServletRequest request, @RequestParam String nickName) {
+    public ResponseEntity<UserDto> getOtherUser(HttpServletRequest request, @PathVariable("nickName") String nickName) {
         UserDto userDto = userService.getUserByToken(request);
 
         if(userDto.getNickName().equals(nickName)){
