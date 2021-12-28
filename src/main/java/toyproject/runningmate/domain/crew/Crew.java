@@ -13,6 +13,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -40,15 +41,22 @@ public class Crew {
     @Column(name = "CREW_NAME", nullable = false, unique = true)
     private String crewName;
 
-    @OneToMany(mappedBy = "crew", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "crew")
     private List<RequestUserToCrew> requests = new ArrayList<>();
 
+    @Column(columnDefinition = "TEXT")
+    private String explanation;
+
+    @Column(name = "D_flag")
+    private boolean deleteFlag;
+
     @Builder
-    public Crew(Long crewLeaderId, String crewRegion, String openChat, String crewName) {
+    public Crew(Long crewLeaderId, String crewRegion, String openChat, String crewName, String explanation) {
         this.crewLeaderId = crewLeaderId;
         this.crewRegion = crewRegion;
         this.openChat = openChat;
         this.crewName = crewName;
+        this.explanation = explanation;
     }
 
     public CrewDto toCrewDto() {
@@ -58,12 +66,46 @@ public class Crew {
                 .crewRegion(crewRegion)
                 .openChat(openChat)
                 .crewName(crewName)
+                .explanation(explanation)
                 .build();
     }
     public List<UserDto> userEntityListToDtoList(){
         return users.stream()
                 .map(User::toUserDto)
                 .collect(Collectors.toList());
+    }
+
+
+    public void setDeleteFlag(boolean deleteFlag) {
+        this.deleteFlag = deleteFlag;
+    }
+
+    public void changeCrewName(String crewName) {
+        this.crewName = crewName;
+    }
+
+    public void changeCrewLeaderId(Long newLeaderId){
+        this.crewLeaderId=newLeaderId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Crew crew = (Crew) o;
+        return isDeleteFlag() == crew.isDeleteFlag() &&
+                Objects.equals(getId(), crew.getId()) &&
+                Objects.equals(getUsers(), crew.getUsers()) &&
+                Objects.equals(getCrewLeaderId(), crew.getCrewLeaderId()) &&
+                Objects.equals(getCrewRegion(), crew.getCrewRegion()) &&
+                Objects.equals(getOpenChat(), crew.getOpenChat()) &&
+                Objects.equals(getCrewName(), crew.getCrewName()) &&
+                Objects.equals(getRequests(), crew.getRequests()) &&
+                Objects.equals(getExplanation(), crew.getExplanation());
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUsers(), getCrewLeaderId(), getCrewRegion(), getOpenChat(), getCrewName(), getRequests(), getExplanation(), isDeleteFlag());
     }
 
 }

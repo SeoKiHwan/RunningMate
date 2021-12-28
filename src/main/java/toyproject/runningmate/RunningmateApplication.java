@@ -3,6 +3,7 @@ package toyproject.runningmate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,18 +43,17 @@ public class RunningmateApplication {
 				.address("미정")
 				.nickName("운영자")
 				.build()).getId();
-	}
 
-	@PostConstruct
-	public void initCrew() {
-		for (int i = 0; i < 100; i++) {
-			Crew crew = Crew.builder()
-					.crewName("crew"+i)
-					.crewRegion("region")
-					.openChat("open")
-					.build();
-
-			crewRepository.save(crew);
+		for (int i = 0; i < 32; i++) {
+			crewRepository.save(Crew.builder()
+					.crewName(String.valueOf(i))
+					.openChat(String.valueOf(i))
+					.crewName(String.valueOf(i))
+					.explanation(String.valueOf(i))
+					.crewRegion(String.valueOf(i))
+					.build(
+					));
 		}
 	}
+
 }

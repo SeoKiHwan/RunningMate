@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -122,6 +123,11 @@ public class User implements UserDetails {
         isCrewLeader = crewLeader;
     }
 
+    public void deleteCrew() {
+        this.crew.getUsers().remove(this);
+        this.crew = null;
+    }
+
     public UserDto toUserDto() {        // Entity -> UserDto
         UserDto userDto = UserDto.builder()
                 .id(id)
@@ -154,5 +160,24 @@ public class User implements UserDetails {
         return loginDto;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return isCrewLeader() == user.isCrewLeader() &&
+                Objects.equals(getId(), user.getId()) &&
+                Objects.equals(getEmail(), user.getEmail()) &&
+                Objects.equals(getPassword(), user.getPassword()) &&
+                Objects.equals(getNickName(), user.getNickName()) &&
+                Objects.equals(getRegDate(), user.getRegDate()) &&
+                Objects.equals(getAddress(), user.getAddress()) &&
+                Objects.equals(getCrew(), user.getCrew()) &&
+                Objects.equals(getRoles(), user.getRoles());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getEmail(), getPassword(), getNickName(), getRegDate(), getAddress(), getCrew(), isCrewLeader(), getRoles());
+    }
 }

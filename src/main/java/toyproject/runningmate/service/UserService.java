@@ -107,6 +107,7 @@ public class UserService {
     }
 
     @Transactional
+
     public void updateCrewLeaderStatus(Long userDtoId){
         User findUser = userRepository.findById(userDtoId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
