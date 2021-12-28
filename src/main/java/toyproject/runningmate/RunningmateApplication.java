@@ -6,7 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import toyproject.runningmate.domain.crew.Crew;
 import toyproject.runningmate.domain.user.User;
+import toyproject.runningmate.repository.CrewRepository;
 import toyproject.runningmate.repository.UserRepository;
 
 import javax.annotation.PostConstruct;
@@ -19,6 +21,7 @@ public class RunningmateApplication {
 
 	private final PasswordEncoder passwordEncoder;
 	private final UserRepository userRepository;
+	private final CrewRepository crewRepository;
 
 	@GetMapping("/")
 	public String home() {
@@ -39,5 +42,18 @@ public class RunningmateApplication {
 				.address("미정")
 				.nickName("운영자")
 				.build()).getId();
+	}
+
+	@PostConstruct
+	public void initCrew() {
+		for (int i = 0; i < 100; i++) {
+			Crew crew = Crew.builder()
+					.crewName("crew"+i)
+					.crewRegion("region")
+					.openChat("open")
+					.build();
+
+			crewRepository.save(crew);
+		}
 	}
 }

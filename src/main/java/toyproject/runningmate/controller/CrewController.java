@@ -2,6 +2,8 @@ package toyproject.runningmate.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +33,13 @@ public class CrewController {
 
     private final CrewService crewService;
     private final UserService userService;
+    private final CrewRepository crewRepository;
 
     //페이징
-    //@GetMapping("/crew")
+    @GetMapping("/crew")
+    public Page<Crew> getAllCrews(Pageable pageable){
 
-    //친구목록 있으면 추가
-
-    // '크루 참여 여부'는 로그인시 주었던 정보로 이미 검증이 이루어진다.
+    }
 
     /**
      Front -> Back
