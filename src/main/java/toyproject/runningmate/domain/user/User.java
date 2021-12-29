@@ -124,7 +124,6 @@ public class User implements UserDetails {
     }
 
     public void deleteCrew() {
-        this.crew.getUsers().remove(this);
         this.crew = null;
     }
 

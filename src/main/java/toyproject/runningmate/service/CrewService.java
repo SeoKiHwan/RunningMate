@@ -105,7 +105,6 @@ public class CrewService {
             String nickName = request.getNickName();
             requests.add(nickName);
         }
-
         return requests;
     }
 
@@ -126,10 +125,10 @@ public class CrewService {
         for (User user : deletedCrew.getUsers()) {
             user.deleteCrew();
         }
-
+        deletedCrew.getUsers().clear();
+        deletedCrew.getRequests().clear();
         deletedCrew.setDeleteFlag(true);
         deletedCrew.changeCrewName("DUMMYCREWNAME" + deletedCrew.getId());
-        deletedCrew.getRequests().clear();
     }
 
     //위임 현재 유저(토큰가지고 있는 얘가 리더), 파라미터로 들어오는 얘가 리더가 될 얘
