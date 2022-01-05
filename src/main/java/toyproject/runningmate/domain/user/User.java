@@ -179,4 +179,7 @@ public class User implements UserDetails {
     public int hashCode() {
         return Objects.hash(getId(), getEmail(), getPassword(), getNickName(), getRegDate(), getAddress(), getCrew(), isCrewLeader(), getRoles());
     }
+
+
+
 }

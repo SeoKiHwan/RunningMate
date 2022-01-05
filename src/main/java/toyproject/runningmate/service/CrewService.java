@@ -16,6 +16,7 @@ import toyproject.runningmate.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -119,12 +120,10 @@ public class CrewService {
 
         leader.setCrewLeader(!leader.isCrewLeader());
 
-        System.out.println(deletedCrew.getUsers().size());
-
-        //크루 멤버들의 crew 연관관계를 깨야함
         for (User user : deletedCrew.getUsers()) {
             user.deleteCrew();
         }
+
         deletedCrew.getUsers().clear();
         deletedCrew.getRequests().clear();
         deletedCrew.setDeleteFlag(true);
