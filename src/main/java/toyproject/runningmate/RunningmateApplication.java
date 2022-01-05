@@ -43,17 +43,6 @@ public class RunningmateApplication {
 				.address("미정")
 				.nickName("운영자")
 				.build()).getId();
-
-		for (int i = 0; i < 32; i++) {
-			crewRepository.save(Crew.builder()
-					.crewName(String.valueOf(i))
-					.openChat(String.valueOf(i))
-					.crewName(String.valueOf(i))
-					.explanation(String.valueOf(i))
-					.crewRegion(String.valueOf(i))
-					.build(
-					));
-		}
 	}
 
 

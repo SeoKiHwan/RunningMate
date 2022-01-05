@@ -47,43 +47,54 @@ public class CrewController {
     // '크루 참여 여부'는 로그인시 주었던 정보로 이미 검증이 이루어진다.
 
     /**
-     Front -> Back
-     Token , CrewDto
+     * FE : 토큰 + crew 정보
+     * BE
+     * 크루 생성
+     * 크루 만든 유저 -> 크루 리더 등록
      */
-    @Transactional
+
     @PostMapping("/crew/new")
     public ResponseEntity createCrew(HttpServletRequest request, @RequestBody CrewDto crewDto) {
 
         UserDto findUserDto = userService.getUserByToken(request);
 
-        if(userService.hasCrew(findUserDto)){  // User의 크루가 이미 존재하는 경우
+        if(userService.hasCrew(findUserDto.getNickName())){  // User의 크루가 이미 존재하는 경우
             return ResponseEntity.ok("이미 크루가 존재합니다.");
         }
 
-        System.out.println("findUserDto = " + findUserDto);
-
         crewService.save(findUserDto,crewDto);         // 새 크루 저장
-        userService.updateCrewLeaderStatus(findUserDto.getId());    // isCrewLeader 상태 변경
+        userService.updateCrewLeaderStatus(findUserDto.getNickName());    // isCrewLeader 상태 변경
 
         return new ResponseEntity("크루 생성 완료", HttpStatus.OK);
     }
 
-    // 크루 상세 페이지
+    /**
+     * 크루 상세 페이지
+     *
+     * FE : 크루 네임 전달
+     *
+     * BE : 크루 이름을 통해 크루Dto 반환
+     */
     @GetMapping("/crew/{crewName}")
-    public CrewDto getCrewPage(@RequestParam("crewName") String crewName){
-        System.out.println("crewName = " + crewName);
+    public CrewDto getCrewPage(@PathVariable("crewName") String crewName){
         CrewDto crewDto = crewService.getCrewByName(crewName);
         crewDto.setUserDtos(crewService.getCrewMembersByCrewName(crewName));
         crewDto.setRequestUsers(crewService.getRequestList(crewName));
         return crewDto;
     }
 
-    //크루 신청 버튼 눌렀을 때
+    /**
+     * 크루 신청
+     *
+     * FE : 크루 이름과 신청할 유저(토큰)
+     *
+     * BE : 크루를 찾고 해당 크루에게 요청
+     */
     @PostMapping("/crew/{crewName}")
-    public Long registCrew(HttpServletRequest request, @RequestParam String crewName) {
+    public Long registCrew(HttpServletRequest request, @PathVariable("crewName") String crewName) {
         UserDto findUserDto = userService.getUserByToken(request);
 
-        if(userService.hasCrew(findUserDto))
+        if(userService.hasCrew(findUserDto.getNickName()))
             throw new IllegalArgumentException("이미 크루가 존재한다.");
 
         CrewDto crewDto = crewService.getCrewByName(crewName);
@@ -93,44 +104,61 @@ public class CrewController {
         return requestId;
     }
 
+    /**
+     * 크루 신청 거절
+     *
+     * FE : 유저 이름
+     *
+     * BE : 요청 거절
+     */
     @DeleteMapping("/crew/request/{nickName}")
-    public ResponseEntity reject(@RequestParam String nickName) {
+    public ResponseEntity reject(@PathVariable("nickName") String nickName) {
         crewService.rejectUser(nickName);
-
         return ResponseEntity.ok("삭제 완료");
     }
 
+    /**
+     * 크루 신청 승낙
+     *
+     * FE : 유저 이름
+     *
+     * BE : 요청 수락
+     *
+     */
     @PostMapping("/crew/request/{nickName}")
-    public ResponseEntity admit(@RequestParam String nickName){
+    public ResponseEntity admit(@PathVariable("nickName") String nickName){
 
-        crewService.addmitUser(nickName);
+        crewService.admitUser(nickName);
 
         crewService.rejectUser(nickName);
 
         return ResponseEntity.ok("추가 완료");
     }
 
-    //크루 삭제
-    //-> 크루에 요청 여러 개 만들고 나서 크루 삭제했을 때 리스트들이 삭제되늕니 확인
+    /**
+     * 크루 삭제
+     *
+     * FE : crew 이름
+     *
+     * BE : 크루를 삭제(soft delete)
+     *
+     */
     @DeleteMapping("/crew/{crewName}")
-    public ResponseEntity deleteCrew(@RequestParam String crewName) {
+    public ResponseEntity deleteCrew(@PathVariable("crewName") String crewName) {
         crewService.deleteCrew(crewName);
-
         return ResponseEntity.ok("삭제 완료");
     }
 
-    //위임
     /**
-     * Crew
-     * crewLeaderId
+     * 크루장 위임
      *
-     * User
-     * 리더가 된 User는 isCrewLeader true
-     * 리더안하는 User는 isCrewLeader false
+     * FE : 토큰(리더) , 크루장을 줄 username
+     *
+     * BE : 위임
      *
      */
     @PostMapping("/crew/edit/leader/{userName}")
-    public ResponseEntity changeCrewLeader(HttpServletRequest request,@RequestParam String userName){
+    public ResponseEntity changeCrewLeader(HttpServletRequest request,@PathVariable("userName") String userName){
 
         UserDto leaderDto = userService.getUserByToken(request);
         crewService.changeCrewLeader(leaderDto.getNickName(),userName);
@@ -138,8 +166,14 @@ public class CrewController {
         return ResponseEntity.ok("위임 완료");
     }
 
-    //크루 이름 변경
-    @PostMapping("/crew/edit/crewname")
+    /**
+     * 크루 이름 변경
+     *
+     * FE : 현재 크루 이름, 바꿀 크루 이름
+     *
+     * BE : 크루 이름 변경
+     */
+    @PostMapping("/crew/edit/name")
     public ResponseEntity changeCrewName(@RequestParam("crewName") String crewName,
                                          @RequestParam("newCrewName") String newName){
 
@@ -148,14 +182,13 @@ public class CrewController {
         return ResponseEntity.ok("이름 변경 완료");
     }
 
-    //크루원 추방
 
     /**
-     * 추방 버튼을 누르면
-     * Crew
-     * users(list)에서 삭제되야하고
-     * User
-     * crew를 null로,
+     * 크루원 추방 or 자진 탈퇴
+     *
+     * FE : 유저 이름
+     *
+     * BE : 해당 크루에서 유저 삭제
      */
 
     @PostMapping("/crew/edit/member")
@@ -165,12 +198,4 @@ public class CrewController {
     }
 
     // 크루탈퇴 : 크루원이 1명인데(크루장) 탈퇴를 누를 때
-
-    //요청 리스트 던져주는거 -> getRequestList
-
-
-
-
-    //페이징
-
 }

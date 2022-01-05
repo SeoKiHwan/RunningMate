@@ -1,14 +1,11 @@
 package toyproject.runningmate.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.user.User;
-import toyproject.runningmate.dto.CrewDto;
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.UserRepository;
@@ -16,7 +13,7 @@ import toyproject.runningmate.repository.UserRepository;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,18 +30,14 @@ public class UserService {
         String token = request.getHeader("X-AUTH-TOKEN");
         String userEmail = jwtTokenProvider.getUserPk(token);
 
-        UserDto userDto = userRepository.findByEmail(userEmail)
+        return userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toUserDto();
-
-        return userDto;
     }
 
     //닉네임에서 User 얻기
     public UserDto getUserByNickName(String nickName) {
-        UserDto userDto = userRepository.findByNickName(nickName)
+        return userRepository.findByNickName(nickName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toUserDto();
-
-        return userDto;
     }
 
     @Transactional
@@ -54,23 +47,19 @@ public class UserService {
 
     //중복 닉네임 확인
     public boolean isExistNickName(String nickName) {
-        boolean present = userRepository.findByNickName(nickName).isPresent();
-
-        return present;
+        return userRepository.findByNickName(nickName).isPresent();
     }
 
     //이메일에서 User 얻기
     public LoginDto getUserByEmail(String email) {
-        LoginDto loginDto = userRepository.findByEmail(email).
+        return userRepository.findByEmail(email).
                 orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toLoginDto();
-
-        return loginDto;
     }
 
     //수정
-    public void updateUser(Long changedUser, UserDto changeUserDto) {
-        User findUser = userRepository.findById(changedUser)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+    @Transactional
+    public void updateUser(String nickName, UserDto changeUserDto) {
+        User findUser = getUserEntity(nickName);
 
         findUser.update(changeUserDto.getNickName(), changeUserDto.getAddress());
     }
@@ -94,19 +83,23 @@ public class UserService {
     }
 
     @Transactional
+    public void updateCrewLeaderStatus(String nickName){
+        User findUser = getUserEntity(nickName);
 
-    public void updateCrewLeaderStatus(Long userDtoId){
-        User findUser = userRepository.findById(userDtoId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
         findUser.setCrewLeader(!findUser.isCrewLeader());
     }
 
-    public boolean hasCrew(UserDto userDto){
-        User user =userRepository.findById(userDto.getId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+    public boolean hasCrew(String nickName){
+        User user = getUserEntity(nickName);
 
         if(user.getCrew() != null) return true;
-        else return false;
+
+        return false;
+    }
+
+    public User getUserEntity(String nickName) {
+        return userRepository.findByNickName(nickName)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
     }
 
 }

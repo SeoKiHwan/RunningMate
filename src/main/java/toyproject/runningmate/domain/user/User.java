@@ -127,7 +127,6 @@ public class User implements UserDetails {
     }
 
     public void deleteCrew() {
-        this.crew.getUsers().remove(this);
         this.crew = null;
     }
 
@@ -184,4 +183,7 @@ public class User implements UserDetails {
     public int hashCode() {
         return Objects.hash(getId(), getEmail(), getPassword(), getNickName(), getRegDate(), getAddress(), getCrew(), isCrewLeader(), getRoles());
     }
+
+
+
 }
