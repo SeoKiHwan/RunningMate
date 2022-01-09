@@ -7,6 +7,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import toyproject.runningmate.domain.crew.Crew;
 
+import toyproject.runningmate.domain.friend.FriendShip;
+import toyproject.runningmate.dto.FriendShipDto;
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
 
@@ -51,6 +53,9 @@ public class User implements UserDetails {
 
     @Column(name = "IS_CREW_LEADER")
     private boolean isCrewLeader;
+
+    @OneToMany(mappedBy = "fromUser")
+    private List<FriendShip> friendShipList = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
@@ -157,6 +162,12 @@ public class User implements UserDetails {
                 .password(password)
                 .build();
         return loginDto;
+    }
+
+    public List<FriendShipDto> userFriendShipListToDto(){
+        return friendShipList.stream()
+                .map(FriendShip::toFriendShipDto)
+                .collect(Collectors.toList());
     }
 
     @Override

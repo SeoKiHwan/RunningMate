@@ -7,12 +7,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import toyproject.runningmate.config.security.JwtTokenProvider;
+import toyproject.runningmate.domain.friend.FriendStatus;
+import toyproject.runningmate.domain.user.User;
+import toyproject.runningmate.dto.FriendShipDto;
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -134,9 +139,44 @@ public class UserController {
     }
 
 
+    //   친구목록
+    @GetMapping("/user/friends")
+    public ResponseEntity<List> getFriendList(HttpServletRequest request){
+        UserDto userDto = userService.getUserByToken(request);  // 토큰으로 유저 찾기
+        User userEntity = userService.getUserEntity(userDto.getNickName());
 
-    /**
-     * 비밀번호 변경
-     */
+        List<FriendShipDto> friendShipDtos = userEntity.userFriendShipListToDto(); // 보낸요청/받은요청/친구 List
+
+        List<String> friendList = new ArrayList<>();    // 친구목록 list
+
+        for (FriendShipDto friendShipDto : friendShipDtos) {
+            if(friendShipDto.getStatus()== FriendStatus.COMPLETED){ // 친구상태면
+                friendList.add(friendShipDto.getReceiveUser());
+            }
+        }
+        return ResponseEntity.ok().body(friendList);
+    }
+
+    // 친구 요청 받은 목록
+    @GetMapping("/user/friend/receive")
+    public ResponseEntity<List> getReceivedFriendRequestList(HttpServletRequest request){
+        UserDto userDto = userService.getUserByToken(request);  // 토큰으로 유저 찾기
+        User userEntity = userService.getUserEntity(userDto.getNickName());
+
+        List<FriendShipDto> friendShipDtos = userEntity.userFriendShipListToDto(); // 보낸요청/받은요청/친구 List
+
+        List<String> receiveList = new ArrayList<>();    // 친구목록 list
+
+        for (FriendShipDto friendShipDto : friendShipDtos) {
+            if(friendShipDto.getStatus()== FriendStatus.RECEIVE){ // 친구상태면
+                receiveList.add(friendShipDto.getReceiveUser());
+            }
+        }
+        return ResponseEntity.ok().body(receiveList);
+    }
+
+
+    // (친구요청/친구수락/요청됨)버튼 눌렀을 때 -> 상태에 따라 기능 달라짐 / 구분 필요
+
 
 }
