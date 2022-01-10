@@ -1,6 +1,9 @@
 package toyproject.runningmate.domain.friend;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.FriendShipDto;
@@ -9,7 +12,10 @@ import toyproject.runningmate.dto.UserDto;
 import javax.persistence.*;
 
 @Entity
+@Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class FriendShip {
 
     @Id
@@ -33,6 +39,10 @@ public class FriendShip {
                 .status(status)
                 .build();
         return friendShipDto;
+    }
+
+    public void changeStatus(FriendStatus status){
+        this.status=status;
     }
 
 }

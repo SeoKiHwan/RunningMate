@@ -54,7 +54,7 @@ public class User implements UserDetails {
     @Column(name = "IS_CREW_LEADER")
     private boolean isCrewLeader;
 
-    @OneToMany(mappedBy = "fromUser")
+    @OneToMany(mappedBy = "sendUser")
     private List<FriendShip> friendShipList = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)

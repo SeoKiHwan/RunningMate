@@ -26,6 +26,5 @@ public class FriendShipDto {
         this.receiveUser = receiveUser;
         this.status = status;
     }
-
 }
 
