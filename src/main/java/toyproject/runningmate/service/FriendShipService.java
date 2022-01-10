@@ -23,7 +23,7 @@ public class FriendShipService {
     private final FriendShipRepository friendShipRepository;
 
 
-    // 친구 관계
+    // 친구 관계 확인
     public String getFriendShipRelation(String fromUser, String toUser){
 
         if(fromUser.equals(toUser)) return "ERROR";     // 자기 자신에게 보내는 경우
@@ -64,9 +64,27 @@ public class FriendShipService {
     }
 
     //친구 요청 취소
+    @Transactional
+    public void cancelFriendRequest(String fromUser, String toUser){
+        User fromUserEntity = userService.getUserEntity(fromUser);
+        User toUserEntity = userService.getUserEntity(toUser);
 
+        List<FriendShip> fromUserFriendShipList = fromUserEntity.getFriendShipList();
 
+        for (FriendShip friendShip : fromUserFriendShipList) {
+            if(friendShip.getReceiveUserNickName().equals(toUser)){
+                friendShipRepository.delete(friendShip);    // A:B SEND  삭제
+            }
+        }
 
+        List<FriendShip> toUserFriendShipList = toUserEntity.getFriendShipList();
+
+        for (FriendShip friendShip : toUserFriendShipList) {
+            if(friendShip.getReceiveUserNickName().equals(fromUser)){
+                friendShipRepository.delete(friendShip);   // B:A RECEIVE 삭제
+            }
+        }
+    }
 
 
     // 친구 요청 수락
@@ -86,6 +104,7 @@ public class FriendShipService {
         }
 
         List<FriendShip> toUserFriendShipList = toUserEntity.getFriendShipList();
+
         for (FriendShip friendShip : toUserFriendShipList) {
             if(friendShip.getReceiveUserNickName().equals(fromUser)){
                 friendShip.changeStatus(FriendStatus.COMPLETED); // B:A COMPLETED

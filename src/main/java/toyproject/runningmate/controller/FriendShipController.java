@@ -88,6 +88,7 @@ public class FriendShipController {
 
         // SEND인 상황에서 버튼 누름 -> 친구 요청 취소
         else if (relation.equals("SEND")) {
+            friendShipService.cancelFriendRequest(tokenUserDto.getNickName(), nickName);
             return ResponseEntity.ok().body("친구요청 취소 성공");
         }
 
