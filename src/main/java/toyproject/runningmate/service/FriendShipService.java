@@ -8,9 +8,7 @@ import toyproject.runningmate.domain.friend.FriendShip;
 import toyproject.runningmate.domain.friend.FriendStatus;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.FriendShipDto;
-import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.repository.FriendShipRepository;
-import toyproject.runningmate.repository.UserRepository;
 
 import java.util.List;
 
@@ -63,9 +61,9 @@ public class FriendShipService {
 
     }
 
-    //친구 요청 취소
+    //친구 요청 취소 / 친구 요청 거절 / 친구 삭제
     @Transactional
-    public void cancelFriendRequest(String fromUser, String toUser){
+    public void deleteFriendShip(String fromUser, String toUser){
         User fromUserEntity = userService.getUserEntity(fromUser);
         User toUserEntity = userService.getUserEntity(toUser);
 
@@ -73,7 +71,7 @@ public class FriendShipService {
 
         for (FriendShip friendShip : fromUserFriendShipList) {
             if(friendShip.getReceiveUserNickName().equals(toUser)){
-                friendShipRepository.delete(friendShip);    // A:B SEND  삭제
+                friendShipRepository.delete(friendShip);    // A:B 삭제
             }
         }
 
@@ -81,11 +79,10 @@ public class FriendShipService {
 
         for (FriendShip friendShip : toUserFriendShipList) {
             if(friendShip.getReceiveUserNickName().equals(fromUser)){
-                friendShipRepository.delete(friendShip);   // B:A RECEIVE 삭제
+                friendShipRepository.delete(friendShip);   // B:A 삭제
             }
         }
     }
-
 
     // 친구 요청 수락
     // A:B COMPLETED      B:A COMPLETED  로 변경
@@ -111,13 +108,5 @@ public class FriendShipService {
             }
         }
     }
-
-    //친구 요청 거절
-
-
-
-    //친구 삭제
-
-
 
 }

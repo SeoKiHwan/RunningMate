@@ -3,10 +3,7 @@ package toyproject.runningmate.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import toyproject.runningmate.domain.friend.FriendStatus;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.FriendShipDto;
@@ -88,13 +85,13 @@ public class FriendShipController {
 
         // SEND인 상황에서 버튼 누름 -> 친구 요청 취소
         else if (relation.equals("SEND")) {
-            friendShipService.cancelFriendRequest(tokenUserDto.getNickName(), nickName);
+            deleteFriendShip(request, nickName);
             return ResponseEntity.ok().body("친구요청 취소 성공");
         }
 
         // RECEIVE인 상황에서 버튼 누름 -> 친구 요청 수락
         else if (relation.equals("RECEIVE")) {
-            friendShipService.acceptFriendRequest(tokenUserDto.getNickName(),nickName);
+            acceptFriendRequest(request,nickName);
             return ResponseEntity.ok().body("친구요청 수락 성공");
         }
 
@@ -107,11 +104,25 @@ public class FriendShipController {
     }
 
 
-    // 친구 요청 수락
+    // 친구 요청 수락 ( 내 요청목록에서 수락)
+    @PostMapping("/user/friend/accept/{nickName}")
+    public ResponseEntity<String> acceptFriendRequest(HttpServletRequest request,
+                                                         @PathVariable("nickName") String nickName) {
 
+        UserDto tokenUserDto = userService.getUserByToken(request);
+        friendShipService.acceptFriendRequest(tokenUserDto.getNickName(),nickName);
+        return ResponseEntity.ok().body("친구요청 수락 성공");
 
-   // 친구 삭제
+    }
 
+    // 친구 요청 취소/ 친구 요청 거절 / 친구 삭제
+    @DeleteMapping("/user/friend/delete/{nickName}")
+    public ResponseEntity<String> deleteFriendShip(HttpServletRequest request,
+                                                      @PathVariable("nickName") String nickName) {
+        UserDto tokenUserDto = userService.getUserByToken(request);
+        friendShipService.deleteFriendShip(tokenUserDto.getNickName(),nickName);
+        return ResponseEntity.ok().body("delete 성공");
+    }
 
 
 
