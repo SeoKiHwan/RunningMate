@@ -43,6 +43,7 @@ public class FriendShipService {
     // 친구 요청 보내기
     @Transactional
     public void sendFriendRequest(String fromUser, String toUser){
+
         // A:B SEND
         friendShipRepository.save(
                 FriendShip.builder()
@@ -108,5 +109,16 @@ public class FriendShipService {
             }
         }
     }
+
+    // friend 관계 검증 메서드
+    // 자기 자신에게 요청하는지  / 없는 유저에게 요청하는지
+    public boolean validateFriendShipRelation(String fromUser, String toUser){
+        if(fromUser.equals(toUser)) return false;       // 자기 자신
+        userService.getUserByNickName(toUser);          // 존재하는 유저인지
+        return true;
+    }
+
+
+
 
 }

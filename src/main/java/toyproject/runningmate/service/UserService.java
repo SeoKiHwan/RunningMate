@@ -8,6 +8,7 @@ import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
+import toyproject.runningmate.repository.FriendShipRepository;
 import toyproject.runningmate.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ public class UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
+    private final FriendShipRepository friendShipRepository;
     private final PasswordEncoder passwordEncoder;
 
     //토큰에서 User 추출
@@ -42,6 +44,12 @@ public class UserService {
 
     @Transactional
     public void deleteUserById(Long userId){
+        User deleteUser = userRepository.getById(userId);
+
+        // 모든 친구/요청 삭제
+        friendShipRepository.deleteUserAllFriendShip(deleteUser, deleteUser.getNickName());
+
+        //유저 삭제
         userRepository.deleteById(userId);
     }
 

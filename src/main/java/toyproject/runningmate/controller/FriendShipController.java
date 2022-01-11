@@ -64,6 +64,10 @@ public class FriendShipController {
     public ResponseEntity<String> getFriendShipRelation(HttpServletRequest request,
                                                         @PathVariable("nickName") String nickName) {
         UserDto tokenUserDto = userService.getUserByToken(request);
+
+        if(!friendShipService.validateFriendShipRelation(tokenUserDto.getNickName(),nickName)){
+            return ResponseEntity.ok().body("잘못된 요청"); // 예외처리
+        }
         String relation = friendShipService.getFriendShipRelation(tokenUserDto.getNickName(), nickName);
         return ResponseEntity.ok().body(relation);
     }
@@ -74,8 +78,12 @@ public class FriendShipController {
                                                          @PathVariable("nickName") String nickName) {
 
         UserDto tokenUserDto = userService.getUserByToken(request);
-        String relation = friendShipService.getFriendShipRelation(tokenUserDto.getNickName(), nickName);
 
+        if(!friendShipService.validateFriendShipRelation(tokenUserDto.getNickName(),nickName)){
+            return ResponseEntity.ok().body("잘못된 요청"); // 예외처리
+        }
+
+        String relation = friendShipService.getFriendShipRelation(tokenUserDto.getNickName(), nickName);
 
         // NOTHING인 상황에서 버튼 누름 -> 친구 요청 보냄
         if(relation.equals("NOTHING")){
@@ -110,6 +118,11 @@ public class FriendShipController {
                                                          @PathVariable("nickName") String nickName) {
 
         UserDto tokenUserDto = userService.getUserByToken(request);
+
+        if(!friendShipService.validateFriendShipRelation(tokenUserDto.getNickName(),nickName)){
+            return ResponseEntity.ok().body("잘못된 요청"); // 예외처리
+        }
+
         friendShipService.acceptFriendRequest(tokenUserDto.getNickName(),nickName);
         return ResponseEntity.ok().body("친구요청 수락 성공");
 
@@ -120,9 +133,22 @@ public class FriendShipController {
     public ResponseEntity<String> deleteFriendShip(HttpServletRequest request,
                                                       @PathVariable("nickName") String nickName) {
         UserDto tokenUserDto = userService.getUserByToken(request);
+
+        if(!friendShipService.validateFriendShipRelation(tokenUserDto.getNickName(),nickName)){
+            return ResponseEntity.ok().body("잘못된 요청"); // 예외처리
+        }
+
         friendShipService.deleteFriendShip(tokenUserDto.getNickName(),nickName);
         return ResponseEntity.ok().body("delete 성공");
     }
+
+
+//    @DeleteMapping("/user/friend/allDelete")
+//    public ResponseEntity<String> deleteUserAllFriendShip(HttpServletRequest request){
+//        UserDto tokenUserDto = userService.getUserByToken(request);
+//        friendShipService.deleteUserAllFriendShip(tokenUserDto.getNickName());
+//        return ResponseEntity.ok().body("All delete 성공");
+//    }
 
 
 

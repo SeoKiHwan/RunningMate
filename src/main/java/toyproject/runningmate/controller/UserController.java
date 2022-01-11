@@ -86,13 +86,9 @@ public class UserController {
      * BE에서 닉네임으로 유저 찾고 삭제
      *
      */
-    @DeleteMapping("/user/{nickName}")
-    public ResponseEntity<String> deleteUser(@PathVariable("nickName") String nickName) {
-
-        Long findUserId = userService.getUserByNickName(nickName).getId();
-
-        userService.deleteUserById(findUserId);
-
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<String> deleteUser(HttpServletRequest request) {
+        userService.deleteUserById(userService.getUserByToken(request).getId());
         return ResponseEntity.ok("삭제 완료");
     }
 
