@@ -49,7 +49,7 @@ public class UserService {
         // 모든 친구/요청 삭제
         friendShipRepository.deleteUserAllFriendShip(deleteUser, deleteUser.getNickName());
 
-        //유저 삭제
+        //유저삭제
         userRepository.deleteById(userId);
     }
 
