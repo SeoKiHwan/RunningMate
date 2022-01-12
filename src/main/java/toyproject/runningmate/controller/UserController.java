@@ -67,8 +67,7 @@ public class UserController {
      */
     @GetMapping("/mypage")
     public UserDto getMyPage(HttpServletRequest request){
-        UserDto userDto = userService.getUserByToken(request);
-        return userDto;
+        return userService.getUserByToken(request);
     }
 
     /**
@@ -95,9 +94,10 @@ public class UserController {
      * BE에서 수정
      *
      */
-    @PostMapping("/user/{nickName}")
+    @PostMapping("/user")
     public ResponseEntity<String> updateUser(HttpServletRequest request,  @RequestBody UserDto userDto) {
 
+        System.out.println("UserController.updateUser");
         //바꿀 대상
         UserDto findUserDto = userService.getUserByToken(request);
 

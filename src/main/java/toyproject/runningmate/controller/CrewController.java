@@ -31,13 +31,12 @@ public class CrewController {
 
     private final CrewService crewService;
     private final UserService userService;
-    private final int size = 5;
 
     //페이징
     @GetMapping("/crew/pages/{pageNum}")
     public List<CrewDto> getCrewDtoByPageRequest(@PathVariable("pageNum") Integer pageNum){
         System.out.println("pageNum.getClass() = " + pageNum.getClass());
-        PageRequest pageRequest = PageRequest.of(pageNum,size);
+        PageRequest pageRequest = PageRequest.of(pageNum,5);
         return crewService.findByPage(pageRequest);
     }
 

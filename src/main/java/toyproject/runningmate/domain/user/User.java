@@ -31,6 +31,7 @@ public class User implements UserDetails {
     //여기에서는 같은 클래스에서 관리하는 방법을 사용
     @Id
     @GeneratedValue
+    @Column(name = "USER_ID")
     private Long id;
 
     @Column(name = "EMAIL", nullable = false, unique = true)

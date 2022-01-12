@@ -21,6 +21,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         //헤더에서 JWT를 받아온다.
         System.out.println("JwtAuthenticationFilter.doFilter");
+
+        System.out.println(request.toString());
+        HttpServletRequest newRequest = (HttpServletRequest) request;
+        System.out.println("newRequest.getHeader(\"X-AUTH-TOKEN\") = " + newRequest.getHeader("X-AUTH-TOKEN"));
+        System.out.println("newRequest.getMethod() = " + newRequest.getMethod());
+        System.out.println("newRequest.getAuthType() = " + newRequest.getAuthType());
+        System.out.println("newRequest.getRequestURI() = " + newRequest.getRequestURI());
+        System.out.println("newRequest.getContentType() = " + newRequest.getContentType());
+
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
         System.out.println(token);
 
