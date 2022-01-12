@@ -10,6 +10,7 @@ import toyproject.runningmate.dto.UserDto;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -68,12 +69,12 @@ public class Crew {
                 .explanation(explanation)
                 .build();
     }
-
     public List<UserDto> userEntityListToDtoList(){
         return users.stream()
                 .map(User::toUserDto)
                 .collect(Collectors.toList());
     }
+
 
     public void setDeleteFlag(boolean deleteFlag) {
         this.deleteFlag = deleteFlag;
@@ -102,9 +103,9 @@ public class Crew {
                 Objects.equals(getRequests(), crew.getRequests()) &&
                 Objects.equals(getExplanation(), crew.getExplanation());
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getUsers(), getCrewLeaderId(), getCrewRegion(), getOpenChat(), getCrewName(), getRequests(), getExplanation(), isDeleteFlag());
     }
+
 }

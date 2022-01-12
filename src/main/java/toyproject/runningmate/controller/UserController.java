@@ -7,12 +7,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import toyproject.runningmate.config.security.JwtTokenProvider;
+import toyproject.runningmate.domain.friend.FriendShip;
+import toyproject.runningmate.domain.friend.FriendStatus;
+import toyproject.runningmate.domain.user.User;
+import toyproject.runningmate.dto.FriendShipDto;
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
+import toyproject.runningmate.service.FriendShipService;
 import toyproject.runningmate.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -22,6 +29,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
+    private final FriendShipService friendShipService;
 
     /**
      *회원가입
@@ -78,12 +86,8 @@ public class UserController {
      *
      */
     @DeleteMapping("/user/{nickName}")
-    public ResponseEntity<String> deleteUser(@PathVariable("nickName") String nickName) {
-
-        Long findUserId = userService.getUserByNickName(nickName).getId();
-
-        userService.deleteUserById(findUserId);
-
+    public ResponseEntity<String> deleteUser(HttpServletRequest request) {
+        userService.deleteUserById(userService.getUserByToken(request).getId());
         return ResponseEntity.ok("삭제 완료");
     }
 
@@ -97,13 +101,15 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<String> updateUser(HttpServletRequest request,  @RequestBody UserDto userDto) {
 
-        System.out.println("UserController.updateUser");
-        //바꿀 대상
         UserDto findUserDto = userService.getUserByToken(request);
 
-        if (userService.isExistNickName(userDto.getNickName())){
-            return new ResponseEntity<>("중복된 닉네임입니다.", HttpStatus.CONFLICT);
+        //닉네임을 변경하려는 시도라면
+        if(!findUserDto.getNickName().equals(userDto.getNickName())) {
+            if (userService.isExistNickName(userDto.getNickName())) {
+                return new ResponseEntity<>("중복된 닉네임입니다.", HttpStatus.CONFLICT);
+            }
         }
+
         //바꿀 값
         userService.updateUser(findUserDto.getNickName(), userDto);
 
@@ -132,11 +138,5 @@ public class UserController {
 
         return ResponseEntity.ok().body(findMemberDto);
     }
-
-
-
-    /**
-     * 비밀번호 변경
-     */
 
 }

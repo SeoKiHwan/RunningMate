@@ -29,7 +29,6 @@ public class RequestUserToCrew {
         this.nickName = nickName;
     }
 
-
     public void addCrew(Crew crew) {
         this.crew = crew;
         crew.getRequests().add(this);

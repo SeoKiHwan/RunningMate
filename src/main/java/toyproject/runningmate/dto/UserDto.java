@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 public class UserDto {
-
+// Password , Crew 필드 삭제
     private Long id;
     private String email;
     private String nickName;
@@ -38,7 +38,6 @@ public class UserDto {
         this.roles = roles;
         this.isCrewLeader = isCrewLeader;
     }
-
     public User toEntity(){
         return User.builder()
                 .email(email)

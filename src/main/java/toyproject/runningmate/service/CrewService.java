@@ -106,7 +106,6 @@ public class CrewService {
             String nickName = request.getNickName();
             requests.add(nickName);
         }
-
         return requests;
     }
 

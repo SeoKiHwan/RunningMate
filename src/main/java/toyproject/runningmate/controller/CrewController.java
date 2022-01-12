@@ -154,7 +154,7 @@ public class CrewController {
      * FE : 토큰(리더) , 크루장을 줄 username
      *
      * BE : 위임
-     *
+     *xx
      */
     @PostMapping("/crew/edit/leader/{userName}")
     public ResponseEntity changeCrewLeader(HttpServletRequest request,@PathVariable("userName") String userName){

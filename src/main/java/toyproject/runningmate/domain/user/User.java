@@ -1,14 +1,14 @@
 package toyproject.runningmate.domain.user;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import toyproject.runningmate.domain.crew.Crew;
-import toyproject.runningmate.dto.CrewDto;
+
+import toyproject.runningmate.domain.friend.FriendShip;
+import toyproject.runningmate.dto.FriendShipDto;
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
 
@@ -55,6 +55,8 @@ public class User implements UserDetails {
     @Column(name = "IS_CREW_LEADER")
     private boolean isCrewLeader;
 
+    @OneToMany(mappedBy = "sendUser")
+    private List<FriendShip> friendShipList = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
@@ -132,7 +134,6 @@ public class User implements UserDetails {
     }
 
     public UserDto toUserDto() {        // Entity -> UserDto
-
         UserDto userDto = UserDto.builder()
                 .id(id)
                 .email(email)
@@ -162,6 +163,12 @@ public class User implements UserDetails {
                 .password(password)
                 .build();
         return loginDto;
+    }
+
+    public List<FriendShipDto> userFriendShipListToDto(){
+        return friendShipList.stream()
+                .map(FriendShip::toFriendShipDto)
+                .collect(Collectors.toList());
     }
 
     @Override
