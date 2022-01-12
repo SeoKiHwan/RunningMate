@@ -142,14 +142,4 @@ public class FriendShipController {
         return ResponseEntity.ok().body("delete 성공");
     }
 
-
-//    @DeleteMapping("/user/friend/allDelete")
-//    public ResponseEntity<String> deleteUserAllFriendShip(HttpServletRequest request){
-//        UserDto tokenUserDto = userService.getUserByToken(request);
-//        friendShipService.deleteUserAllFriendShip(tokenUserDto.getNickName());
-//        return ResponseEntity.ok().body("All delete 성공");
-//    }
-
-
-
 }
