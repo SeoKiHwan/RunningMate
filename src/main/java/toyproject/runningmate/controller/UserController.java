@@ -86,7 +86,7 @@ public class UserController {
      * BE에서 닉네임으로 유저 찾고 삭제
      *
      */
-    @DeleteMapping("/user/delete")
+    @DeleteMapping("/user/{nickName}")
     public ResponseEntity<String> deleteUser(HttpServletRequest request) {
         userService.deleteUserById(userService.getUserByToken(request).getId());
         return ResponseEntity.ok("삭제 완료");
@@ -102,12 +102,16 @@ public class UserController {
     @PostMapping("/user/{nickName}")
     public ResponseEntity<String> updateUser(HttpServletRequest request,  @RequestBody UserDto userDto) {
 
-        //바꿀 대상
+        //사용자
         UserDto findUserDto = userService.getUserByToken(request);
 
-        if (userService.isExistNickName(userDto.getNickName())){
-            return new ResponseEntity<>("중복된 닉네임입니다.", HttpStatus.CONFLICT);
+        //닉네임을 변경하려는 시도라면
+        if(!findUserDto.getNickName().equals(userDto.getNickName())) {
+            if (userService.isExistNickName(userDto.getNickName())) {
+                return new ResponseEntity<>("중복된 닉네임입니다.", HttpStatus.CONFLICT);
+            }
         }
+
         //바꿀 값
         userService.updateUser(findUserDto.getNickName(), userDto);
 
