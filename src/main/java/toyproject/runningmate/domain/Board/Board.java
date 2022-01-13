@@ -3,6 +3,7 @@ package toyproject.runningmate.domain.Board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import toyproject.runningmate.domain.Address;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.BoardDto;
 
@@ -32,7 +33,12 @@ public class Board {
     private boolean isClosed;
 
     private String meetingTime;
-    private String meetingPlace;
+
+    //바꾼 것
+    @Embedded
+    private Address address;
+
+//    private String meetingPlace;
     //      selectbox1   2
     //  턱별/광역/도  시/구/군  읍/면/동  서울특별시 동작구 황도동
     //               ======
@@ -43,13 +49,13 @@ public class Board {
     private String openChat;
 
     @Builder
-    public Board(User user, String title, String content, boolean isClosed, String meetingTime, String meetingPlace, LocalDateTime regDate, int count, String image, String openChat) {
+    public Board(User user, String title, String content, boolean isClosed, String meetingTime, Address address, LocalDateTime regDate, int count, String image, String openChat) {
         this.user = user;
         this.title = title;
         this.content = content;
         this.isClosed = isClosed;
         this.meetingTime = meetingTime;
-        this.meetingPlace = meetingPlace;
+        this.address = address;
         this.regDate = regDate;
         this.count = count;
         this.image = image;
@@ -61,9 +67,9 @@ public class Board {
                 .id(getId())
                 .userDto(getUser().toUserDto())
                 .title(getTitle())
+                .address(getAddress())
                 .content(getContent())
                 .isClosed(isClosed())
-                .meetingPlace(getMeetingPlace())
                 .meetingTime(getMeetingTime())
                 .regDate(getRegDate())
                 .count(getCount())
@@ -72,10 +78,10 @@ public class Board {
                 .build();
     }
 
-    public void update(String title, String content, String meetingPlace, String meetingTime, String image, String openChat) {
+    public void update(String title, String content, Address address, String meetingTime, String image, String openChat) {
         this.title = title;
         this.content = content;
-        this.meetingPlace = meetingPlace;
+        this.address = address;
         this.meetingTime = meetingTime;
         this.image = image;
         this.openChat = openChat;
