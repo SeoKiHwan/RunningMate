@@ -70,22 +70,15 @@ public class BoardController {
         return ResponseEntity.ok("삭제 완료");
     }
 
-    //게시글 전체 조회
+    //게시글 조회
     @GetMapping("/runs")
-    public ResponseEntity<List<BoardDto>> findAllBoard(@RequestParam("offset") int offset,
-                                                       @RequestParam("limit") int limit) {
-        List<BoardDto> boardList = boardService.findBoardList(offset, limit);
+    public ResponseEntity<List<BoardDto>> findAllBoard(@RequestParam(value = "si", required = false) String si,
+                                                       @RequestParam(value = "gu", required = false) String gu,
+                                                       @RequestParam(value = "dong", required = false) String dong,
+                                                       @RequestParam(value = "offset", required = false) int offset,
+                                                       @RequestParam(value = "limit", required = false) int limit) {
+        List<BoardDto> boardList = boardService.findBoardList(si, gu, dong, offset, limit);
 
         return new ResponseEntity<>(boardList, HttpStatus.OK);
     }
-
-//    //게시글 지역 조회
-//    @GetMapping("/runs/{region}")
-//    public ResponseEntity<List<BoardDto>> findRegionBoard(
-//            @PathVariable("region") String region,
-//            @RequestParam("offset") int offset,
-//            @RequestParam("limit") int limit
-//    ) {
-//
-//    }
 }
