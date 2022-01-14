@@ -37,7 +37,7 @@ public class BoardService {
                 .content(boardDto.getContent())
                 .isClosed(boardDto.isClosed())
                 .meetingTime(boardDto.getMeetingTime())
-                .meetingPlace(boardDto.getMeetingPlace())
+                .address(boardDto.getAddress())
                 .regDate(LocalDateTime.now())
                 .count(boardDto.getCount())
                 .image(boardDto.getImage())
@@ -58,7 +58,7 @@ public class BoardService {
         board.update(
                 boardDto.getTitle(),
                 boardDto.getContent(),
-                boardDto.getMeetingPlace(),
+                boardDto.getAddress(),
                 boardDto.getMeetingTime(),
                 boardDto.getImage(),
                 boardDto.getOpenChat()
@@ -111,21 +111,42 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    public List<BoardDto> findBoardList(int offset, int limit) {
-        return em.createQuery("select b from Board b", Board.class)
-                .setFirstResult(offset)
-                .setMaxResults(limit)
-                .getResultList().stream()
-                .map(bl -> bl.toBoardDto())
-                .collect(Collectors.toList());
-    }
+    public List<BoardDto> findBoardList(String si, String gu, String dong, int offset, int limit) {
 
-    public List<BoardDto> findRegList(String region, int offset, int limit) {
-        return em.createQuery("select b from Board b", Board.class)
-                .setFirstResult(offset)
-                .setMaxResults(limit)
-                .getResultList().stream()
-                .map(bl -> bl.toBoardDto())
-                .collect(Collectors.toList());
+        if (si == null) {
+            return em.createQuery("select b from Board b", Board.class)
+                    .setFirstResult(offset)
+                    .setMaxResults(limit)
+                    .getResultList().stream()
+                    .map(bl -> bl.toBoardDto())
+                    .collect(Collectors.toList());
+        } else if (gu == null) {
+            return em.createQuery("select b from Board b where b.address.si = :si", Board.class)
+                    .setParameter("si", si)
+                    .setFirstResult(offset)
+                    .setMaxResults(limit)
+                    .getResultList().stream()
+                    .map(bl -> bl.toBoardDto())
+                    .collect(Collectors.toList());
+        } else if (dong == null) {
+            return em.createQuery("select b from Board b where b.address.si = :si and b.address.gu = :gu", Board.class)
+                    .setParameter("si", si)
+                    .setParameter("gu", gu)
+                    .setFirstResult(offset)
+                    .setMaxResults(limit)
+                    .getResultList().stream()
+                    .map(bl -> bl.toBoardDto())
+                    .collect(Collectors.toList());
+        } else {
+            return em.createQuery("select b from Board b where b.address.si = :si and b.address.gu = :gu and b.address.dong = :dong", Board.class)
+                    .setParameter("si", si)
+                    .setParameter("gu", gu)
+                    .setParameter("dong", dong)
+                    .setFirstResult(offset)
+                    .setMaxResults(limit)
+                    .getResultList().stream()
+                    .map(bl -> bl.toBoardDto())
+                    .collect(Collectors.toList());
+        }
     }
 }
