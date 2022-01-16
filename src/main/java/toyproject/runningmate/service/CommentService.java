@@ -50,4 +50,10 @@ public class CommentService {
 
         return comment.toCommentDto();
     }
+
+    //댓글 삭제
+    @Transactional
+    public void deleteComment(Long commentId) {
+        commentRepository.deleteById(commentId);
+    }
 }

@@ -1,6 +1,8 @@
 package toyproject.runningmate.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import toyproject.runningmate.dto.CommentDto;
 import toyproject.runningmate.service.CommentService;
@@ -27,5 +29,13 @@ public class CommentController {
     @PostMapping("/boards/comments/{comment-id}")
     public CommentDto update(@PathVariable("comment-id") String commentId, @RequestBody String content) {
         return commentService.updateComment(Long.parseLong(commentId), content);
+    }
+
+    //댓글 삭제
+    @DeleteMapping("/boards/comments/{comment-id}")
+    public ResponseEntity<String> delete(@PathVariable("comment-id") Long commentId) {
+        commentService.deleteComment(commentId);
+
+        return new ResponseEntity<>("삭제 완료", HttpStatus.OK);
     }
 }
