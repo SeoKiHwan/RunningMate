@@ -39,4 +39,15 @@ public class CommentService {
 
         return comment.toCommentDto();
     }
+
+    //댓글 수정
+    @Transactional
+    public CommentDto updateComment(Long commentId, String content) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글"));
+
+        comment.update(content);
+
+        return comment.toCommentDto();
+    }
 }
