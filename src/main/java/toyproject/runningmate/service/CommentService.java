@@ -13,6 +13,8 @@ import toyproject.runningmate.repository.CommentRepository;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,5 +57,14 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
+    }
+
+    //댓글 조회
+    public List<CommentDto> findBoardComments(Long boardId) {
+        return em.createQuery("select c from Comment c where c.board.id = :id", Comment.class)
+                .setParameter(("id"), boardId)
+                .getResultList().stream()
+                .map(c -> c.toCommentDto())
+                .collect(Collectors.toList());
     }
 }

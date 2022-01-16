@@ -9,6 +9,7 @@ import toyproject.runningmate.service.CommentService;
 import toyproject.runningmate.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +38,13 @@ public class CommentController {
         commentService.deleteComment(commentId);
 
         return new ResponseEntity<>("삭제 완료", HttpStatus.OK);
+    }
+
+    //댓글 조회
+    @GetMapping("/boards/{board-id}/comments")
+    public ResponseEntity<List<CommentDto>> boardComments(@PathVariable("board-id") Long boardId) {
+        List<CommentDto> boardComments = commentService.findBoardComments(boardId);
+
+        return new ResponseEntity<>(boardComments, HttpStatus.OK);
     }
 }
