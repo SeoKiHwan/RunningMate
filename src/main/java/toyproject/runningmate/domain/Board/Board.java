@@ -65,6 +65,7 @@ public class Board {
     public BoardDto toBoardDto(){
         return BoardDto.builder()
                 .id(getId())
+                .author(getUser().getNickName())
                 .userDto(getUser().toUserDto())
                 .title(getTitle())
                 .address(getAddress())

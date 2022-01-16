@@ -31,10 +31,12 @@ public class BoardDto {
     private int count;
     private String image;
     private String openChat;
+    private String author;
 
     @Builder
-    public BoardDto(Long id, UserDto userDto, String title, String content,boolean isClosed, String meetingTime, Address address, LocalDateTime regDate, int count, String image, String openChat) {
+    public BoardDto(Long id, String author, UserDto userDto, String title, String content,boolean isClosed, String meetingTime, Address address, LocalDateTime regDate, int count, String image, String openChat) {
         this.id = id;
+        this.author = author;
         this.userDto = userDto;
         this.title = title;
         this.content = content;
