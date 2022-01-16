@@ -1,10 +1,7 @@
 package toyproject.runningmate.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import toyproject.runningmate.dto.CommentDto;
 import toyproject.runningmate.service.CommentService;
 import toyproject.runningmate.service.UserService;
@@ -19,10 +16,16 @@ public class CommentController {
     private final UserService userService;
 
     //댓글 생성
-    @PostMapping("/board/run")
+    @PostMapping("/boards/{board-id}/comments")
     public CommentDto save(HttpServletRequest request, @RequestBody String content,
-                           @RequestParam("boardId") String boardId) {
+                           @PathVariable("board-id") String boardId) {
         return commentService.saveComment(userService.getUserByToken(request), content,
                 Long.parseLong(boardId));
+    }
+
+    //댓글 수정
+    @PostMapping("/boards/comments/{comment-id}")
+    public CommentDto update(@PathVariable("comment-id") String commentId, @RequestBody String content) {
+        return commentService.updateComment(Long.parseLong(commentId), content);
     }
 }
