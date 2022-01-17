@@ -33,6 +33,7 @@ public class BoardService {
 
         Board board = Board.builder()
                 .user(user)
+                .boardCategory(boardDto.getBoardCategory())
                 .title(boardDto.getTitle())
                 .content(boardDto.getContent())
                 .isClosed(boardDto.isClosed())
@@ -65,7 +66,7 @@ public class BoardService {
         );
     }
 
-    //게시글 조회
+    //게시글 조회 수
     @Transactional
     public BoardDto findBoard(Long boardId, UserDto userDto) {
         Board board = boardRepository.findById(boardId)
@@ -111,37 +112,37 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    public List<BoardDto> findBoardList(String si, String gu, String dong, int offset, int limit) {
+    public List<BoardDto> findBoardList(String dou, String si, String gu, int offset, int limit) {
 
-        if (si == null) {
+        if (dou == null) {
             return em.createQuery("select b from Board b", Board.class)
                     .setFirstResult(offset)
                     .setMaxResults(limit)
                     .getResultList().stream()
                     .map(bl -> bl.toBoardDto())
                     .collect(Collectors.toList());
-        } else if (gu == null) {
-            return em.createQuery("select b from Board b where b.address.si = :si", Board.class)
-                    .setParameter("si", si)
+        } else if (si == null) {
+            return em.createQuery("select b from Board b where b.address.dou = :dou", Board.class)
+                    .setParameter("dou", dou)
                     .setFirstResult(offset)
                     .setMaxResults(limit)
                     .getResultList().stream()
                     .map(bl -> bl.toBoardDto())
                     .collect(Collectors.toList());
-        } else if (dong == null) {
-            return em.createQuery("select b from Board b where b.address.si = :si and b.address.gu = :gu", Board.class)
+        } else if (gu == null) {
+            return em.createQuery("select b from Board b where b.address.dou = :dou and b.address.si = :si", Board.class)
+                    .setParameter("dou", dou)
                     .setParameter("si", si)
-                    .setParameter("gu", gu)
                     .setFirstResult(offset)
                     .setMaxResults(limit)
                     .getResultList().stream()
                     .map(bl -> bl.toBoardDto())
                     .collect(Collectors.toList());
         } else {
-            return em.createQuery("select b from Board b where b.address.si = :si and b.address.gu = :gu and b.address.dong = :dong", Board.class)
+            return em.createQuery("select b from Board b where b.address.dou = :dou and b.address.si = :si and b.address.gu = :gu", Board.class)
+                    .setParameter("dou", dou)
                     .setParameter("si", si)
                     .setParameter("gu", gu)
-                    .setParameter("dong", dong)
                     .setFirstResult(offset)
                     .setMaxResults(limit)
                     .getResultList().stream()
