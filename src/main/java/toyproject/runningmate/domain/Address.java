@@ -11,16 +11,18 @@ import javax.persistence.Embeddable;
 @Getter @Setter
 public class Address {
 
+    private String dou;
     private String si;
     private String gu;
-    private String dong;
 
     @Builder
-    public Address(String si, String gu, String dong) {
+    public Address(String dou, String si, String gu) {
+        this.dou = dou;
         this.si = si;
         this.gu = gu;
-        this.dong = dong;
     }
+
+
 
     protected Address() {
     }
