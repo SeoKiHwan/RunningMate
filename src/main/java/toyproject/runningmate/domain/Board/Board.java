@@ -34,12 +34,15 @@ public class Board {
 
     private String meetingTime;
 
+    @Enumerated(EnumType.STRING)
+    private BoardCategory boardCategory;
+
     //바꾼 것
     @Embedded
     private Address address;
 
 //    private String meetingPlace;
-    //      selectbox1   2
+    //      selectbox1
     //  턱별/광역/도  시/구/군  읍/면/동  서울특별시 동작구 황도동
     //               ======
 
@@ -49,8 +52,9 @@ public class Board {
     private String openChat;
 
     @Builder
-    public Board(User user, String title, String content, boolean isClosed, String meetingTime, Address address, LocalDateTime regDate, int count, String image, String openChat) {
+    public Board(User user, BoardCategory boardCategory, String title, String content, boolean isClosed, String meetingTime, Address address, LocalDateTime regDate, int count, String image, String openChat) {
         this.user = user;
+        this.boardCategory = boardCategory;
         this.title = title;
         this.content = content;
         this.isClosed = isClosed;
@@ -65,7 +69,7 @@ public class Board {
     public BoardDto toBoardDto(){
         return BoardDto.builder()
                 .id(getId())
-                .author(getUser().getNickName())
+                .boardCategory(getBoardCategory())
                 .userDto(getUser().toUserDto())
                 .title(getTitle())
                 .address(getAddress())

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import toyproject.runningmate.domain.Address;
 import toyproject.runningmate.domain.Board.Board;
+import toyproject.runningmate.domain.Board.BoardCategory;
 import toyproject.runningmate.domain.user.User;
 
 import javax.persistence.Column;
@@ -32,11 +33,13 @@ public class BoardDto {
     private String image;
     private String openChat;
     private String author;
+    private BoardCategory boardCategory;
 
     @Builder
-    public BoardDto(Long id, String author, UserDto userDto, String title, String content,boolean isClosed, String meetingTime, Address address, LocalDateTime regDate, int count, String image, String openChat) {
+    public BoardDto(Long id, BoardCategory boardCategory, UserDto userDto, String title, String content,boolean isClosed, String meetingTime, Address address, LocalDateTime regDate, int count, String image, String openChat) {
         this.id = id;
-        this.author = author;
+        this.boardCategory = boardCategory;
+        this.author = userDto.getNickName();
         this.userDto = userDto;
         this.title = title;
         this.content = content;
