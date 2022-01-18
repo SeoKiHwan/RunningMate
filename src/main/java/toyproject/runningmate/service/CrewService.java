@@ -2,7 +2,6 @@ package toyproject.runningmate.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toyproject.runningmate.domain.crew.Crew;
@@ -16,7 +15,6 @@ import toyproject.runningmate.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,9 +157,12 @@ public class CrewService {
         user.deleteCrew();
     }
 
-    public List<CrewDto> findByPage(PageRequest pageRequest) {
-        return crewRepository.findAll(pageRequest).stream()
-                .map(Crew::toCrewDto)
+    public List<CrewDto> findByPage(int offset, int limit) {
+        return em.createQuery("select c from Crew c", Crew.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList().stream()
+                .map(a -> a.toCrewDto())
                 .collect(Collectors.toList());
     }
 
