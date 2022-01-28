@@ -31,17 +31,22 @@ public class CrewService {
     private final UserService userService;
 
     @Transactional
-    public Long save(UserDto userDto, CrewDto crewDto) { // Dto로 받아서
+    public Long save(UserDto userDto, CrewDto crewDto) {
 
-        User findUserEntity = userService.getUserEntity(userDto.getNickName());
+        User user = userService.getUserEntity(userDto.getNickName());
 
-        crewDto.setCrewLeaderId(userDto.getId());
+        Crew crew = Crew.builder()
+                .crewLeaderId(userDto.getId())
+                .crewRegion(crewDto.getCrewRegion())
+                .openChat(crewDto.getOpenChat())
+                .crewName(crewDto.getCrewName())
+                .explanation(crewDto.getExplanation())
+                .build();
 
-        Crew crewEntity = crewDto.toEntity();
-        findUserEntity.addCrew(crewEntity);
-        crewRepository.save(crewEntity);
+        user.addCrew(crew);
+        crewRepository.save(crew);
 
-        return crewEntity.getId();  // Entity로 저장
+        return crew.getId();  // Entity로 저장
     }
 
     public CrewDto getCrewByName(String crewName) {
