@@ -2,7 +2,9 @@ package toyproject.runningmate.dto;
 
 import lombok.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,7 +18,7 @@ public class CrewDto {
     private String crewName;
     private String explanation;
     private List<UserDto> userDtos = new ArrayList<>();
-    private List<String> requestUsers= new ArrayList<>();
+    private Set<String> requestUsers= new HashSet<>();
 
     @Builder
     public CrewDto(Long id, Long crewLeaderId, String crewRegion, String openChat, String crewName, String explanation) {

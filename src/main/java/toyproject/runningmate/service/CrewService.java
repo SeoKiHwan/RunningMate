@@ -15,7 +15,9 @@ import toyproject.runningmate.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -49,6 +51,29 @@ public class CrewService {
         return crew.getId();  // Entity로 저장
     }
 
+    public CrewDto getCrewInfo(String crewName) {
+        Crew crew = em.createQuery(
+                "select distinct c from Crew c" +
+                        " join fetch c.users" +
+                        " left outer join fetch c.requests" +
+                        " where c.crewName = :name", Crew.class)
+                .setParameter("name", crewName)
+                .getSingleResult();
+
+        CrewDto crewDto = crew.toCrewDto();
+        crewDto.setUserDtos(crew.getUsers().stream()
+                .map(o -> o.toUserDto())
+                .collect(Collectors.toList())
+        );
+
+        crewDto.setRequestUsers(crew.getRequests().stream()
+                .map(o -> o.getNickName())
+                .collect(Collectors.toSet())
+        );
+
+        return crewDto;
+    }
+
     public CrewDto getCrewByName(String crewName) {
 
         Crew crew = getCrewEntity(crewName);
@@ -58,12 +83,6 @@ public class CrewService {
         }
 
         return crew.toCrewDto();
-    }
-
-    public List<UserDto> getCrewMembersByCrewName(String crewName){
-        Crew crew = getCrewEntity(crewName);
-
-        return crew.userEntityListToDtoList();
     }
 
     @Transactional
@@ -98,18 +117,6 @@ public class CrewService {
         User findUser = userService.getUserEntity(userNickName);
 
         findUser.addCrew(crew);
-    }
-
-    public List<String> getRequestList(String crewName) {
-        Crew findCrew = getCrewEntity(crewName);
-
-        List<String> requests = new ArrayList<>();
-
-        for (RequestUserToCrew request : findCrew.getRequests()) {
-            String nickName = request.getNickName();
-            requests.add(nickName);
-        }
-        return requests;
     }
 
     //크루 삭제면 UserDto에 있는 crewName, User에 있는 isCrewLeader 변경
