@@ -14,7 +14,6 @@ import toyproject.runningmate.repository.UserRepository;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,6 +33,12 @@ public class UserService {
 
         return userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toUserDto();
+    }
+
+    //토큰에서 메일만 추출
+    public String getEmailByToken(HttpServletRequest request) {
+        String token = request.getHeader("X-AUTH-TOKEN");
+        return jwtTokenProvider.getUserPk(token);
     }
 
     //닉네임에서 User 얻기
@@ -88,21 +93,6 @@ public class UserService {
         userRepository.save(member);
 
         return member.getId();
-    }
-
-    @Transactional
-    public void updateCrewLeaderStatus(String nickName){
-        User findUser = getUserEntity(nickName);
-
-        findUser.setCrewLeader(!findUser.isCrewLeader());
-    }
-
-    public boolean hasCrew(String nickName){
-        User user = getUserEntity(nickName);
-
-        if(user.getCrew() != null) return true;
-
-        return false;
     }
 
     public User getUserEntity(String nickName) {

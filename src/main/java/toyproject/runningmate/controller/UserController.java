@@ -1,10 +1,13 @@
 package toyproject.runningmate.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.friend.FriendShip;
@@ -73,9 +76,11 @@ public class UserController {
      * FE에서 토큰 주고
      * BE에서 userDto(유저 정보)
      */
-    @GetMapping("/mypage")
+    @GetMapping("/user")
     public UserDto getMyPage(HttpServletRequest request){
+
         return userService.getUserByToken(request);
+
     }
 
     /**
@@ -85,7 +90,7 @@ public class UserController {
      * BE에서 닉네임으로 유저 찾고 삭제
      *
      */
-    @DeleteMapping("/user/{nickName}")
+    @DeleteMapping("/users/{user-name}")
     public ResponseEntity<String> deleteUser(HttpServletRequest request) {
         userService.deleteUserById(userService.getUserByToken(request).getId());
         return ResponseEntity.ok("삭제 완료");
@@ -98,7 +103,7 @@ public class UserController {
      * BE에서 수정
      *
      */
-    @PostMapping("/user")
+    @PostMapping("/users/{user-name}")
     public ResponseEntity<String> updateUser(HttpServletRequest request,  @RequestBody UserDto userDto) {
 
         UserDto findUserDto = userService.getUserByToken(request);
@@ -125,8 +130,8 @@ public class UserController {
      * FE에서 nickName(2번 유저), token(3번 유저, 현재 로그인 상태)
      * BE에선 닉네임을 비교하여 같으면 mypage, 다르면 현재 선택한 정보 조회
      **/
-    @GetMapping("/user/{nickName}")
-    public ResponseEntity<UserDto> getOtherUser(HttpServletRequest request, @PathVariable("nickName") String nickName) {
+    @GetMapping("/user/{user-name}")
+    public ResponseEntity<UserDto> getOtherUser(HttpServletRequest request, @PathVariable("user-name") String nickName) {
         UserDto userDto = userService.getUserByToken(request);
 
         if(userDto.getNickName().equals(nickName)){
