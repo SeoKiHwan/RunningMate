@@ -2,6 +2,7 @@ package toyproject.runningmate.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toyproject.runningmate.domain.crew.Crew;
@@ -14,16 +15,14 @@ import toyproject.runningmate.repository.RequestRepository;
 import toyproject.runningmate.repository.UserRepository;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class CrewService {
 
     private final CrewRepository crewRepository;
@@ -145,16 +144,23 @@ public class CrewService {
 
     //위임 현재 유저(토큰가지고 있는 얘가 리더), 파라미터로 들어오는 얘가 리더가 될 얘
     @Transactional
-    public void changeCrewLeader(String leaderName, String userName) {
-        User leader = userService.getUserEntity(leaderName);
-        User user = userService.getUserEntity(userName);
+    public void changeCrewLeader(String leaderEmail, String userName) {
+        User leader = em.createQuery(
+                "select u from User u" +
+                        " join fetch u.crew c" +
+                        " where u.email=:email", User.class)
+                .setParameter("email", leaderEmail)
+                .getSingleResult();
+
+        User nonleader = userService.getUserEntity(userName);
+
+        log.info("leader name: {}", leader.getNickName());
+        log.info("nonleader name: {}", nonleader.getNickName());
 
         leader.setCrewLeader(false);
-        user.setCrewLeader(true);
+        nonleader.setCrewLeader(true);
 
-        Crew crew = getCrewEntity(user.getCrew().getCrewName());
-
-        crew.changeCrewLeaderId(user.getId());
+        leader.getCrew().changeCrewLeaderId(nonleader.getId());
     }
 
     //crewName 변경

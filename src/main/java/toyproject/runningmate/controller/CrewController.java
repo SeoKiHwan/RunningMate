@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import toyproject.runningmate.domain.crew.Crew;
 import toyproject.runningmate.dto.CrewDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.service.CrewService;
 import toyproject.runningmate.service.UserService;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -132,10 +130,11 @@ public class CrewController {
      *xx
      */
     @PatchMapping("/crew/users/{user-name}/edit")
-    public ResponseEntity changeCrewLeader(HttpServletRequest request,@PathVariable("user-name") String userName){
+    public ResponseEntity changeCrewLeader(HttpServletRequest request,
+                                           @PathVariable("user-name") String userName){
 
-        UserDto leaderDto = userService.getUserByToken(request);
-        crewService.changeCrewLeader(leaderDto.getNickName(),userName);
+        String leaderEmail = userService.getEmailByToken(request);
+        crewService.changeCrewLeader(leaderEmail,userName);
 
         return ResponseEntity.ok("위임 완료");
     }
