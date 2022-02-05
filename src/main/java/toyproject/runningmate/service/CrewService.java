@@ -32,12 +32,17 @@ public class CrewService {
     private final UserService userService;
 
     @Transactional
-    public Long save(UserDto userDto, CrewDto crewDto) {
+    public Long save(String email, CrewDto crewDto) {
 
-        User user = userService.getUserEntity(userDto.getNickName());
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+
+        if(user.getCrew() != null){
+            throw new IllegalArgumentException("이미 크루 존재");
+        }
 
         Crew crew = Crew.builder()
-                .crewLeaderId(userDto.getId())
+                .crewLeaderId(user.getId())
                 .crewRegion(crewDto.getCrewRegion())
                 .openChat(crewDto.getOpenChat())
                 .crewName(crewDto.getCrewName())
@@ -45,6 +50,8 @@ public class CrewService {
                 .build();
 
         user.addCrew(crew);
+        user.setCrewLeader(true);
+
         crewRepository.save(crew);
 
         return crew.getId();  // Entity로 저장
