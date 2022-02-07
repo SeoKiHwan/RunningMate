@@ -60,9 +60,9 @@ public class FriendShipController {
 
     //  친구 관계 확인 {SEND,RECEIVE,COMPLETED}
     //  토큰 던지는 유저 : URI 유저
-    @GetMapping("/user/friends/{requesteeName}")
+    @GetMapping("/user/friends/{requestee-name}")
     public ResponseEntity<String> getFriendShipRelation(HttpServletRequest request,
-                                                        @PathVariable("requesteeName") String nickName) {
+                                                        @PathVariable("requestee-name") String nickName) {
         UserDto tokenUserDto = userService.getUserByToken(request);
 
         if(!friendShipService.validateFriendShipRelation(tokenUserDto.getNickName(),nickName)){
@@ -73,9 +73,9 @@ public class FriendShipController {
     }
 
     // 상대 유저 상세페이지의 친구버튼 눌렀을 때, 마이페이지에서 친구요청 수락 눌렀을 때 호출되는 API
-    @PostMapping("/user/friends/{requesteeName}")
+    @PostMapping("/user/friends/{requestee-name}")
     public ResponseEntity<String> changeFriendShipStatus(HttpServletRequest request,
-                                                         @PathVariable("requesteeName") String nickName) {
+                                                         @PathVariable("requestee-name") String nickName) {
 
         UserDto tokenUserDto = userService.getUserByToken(request);
 
@@ -112,9 +112,9 @@ public class FriendShipController {
     }
 
     // 친구 요청 취소/ 친구 요청 거절 / 친구 삭제
-    @DeleteMapping("/user/friends/{requesteeName}")
+    @DeleteMapping("/user/friends/{requestee-name}")
     public ResponseEntity<String> deleteFriendShip(HttpServletRequest request,
-                                                      @PathVariable("requesteeName") String nickName) {
+                                                      @PathVariable("requestee-name") String nickName) {
         UserDto tokenUserDto = userService.getUserByToken(request);
 
         if(!friendShipService.validateFriendShipRelation(tokenUserDto.getNickName(),nickName)){
