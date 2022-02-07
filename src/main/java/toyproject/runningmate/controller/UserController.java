@@ -32,8 +32,8 @@ public class UserController {
      *
      * 토큰 + userDto
      */
-    @PostMapping("/login/v1")
-    public UserDto loginV1(@RequestBody LoginDto loginDto) {
+    @PostMapping("/login")
+    public UserDto login(@RequestBody LoginDto loginDto) {
 
         return userService.login(loginDto);
     }

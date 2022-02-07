@@ -48,31 +48,23 @@ public class Crew {
     @Column(name = "D_flag")
     private boolean deleteFlag;
 
+    private String image;
+
     @Builder
-    public Crew(Long crewLeaderId, String crewRegion, String openChat, String crewName, String explanation) {
-        this.crewLeaderId = crewLeaderId;
-        this.crewRegion = crewRegion;
-        this.openChat = openChat;
-        this.crewName = crewName;
-        this.explanation = explanation;
+    public Crew(CrewDto crewDto) {
+        crewLeaderId = crewDto.getCrewLeaderId();
+        crewRegion = crewDto.getCrewRegion();
+        openChat = crewDto.getOpenChat();
+        crewName = crewDto.getCrewName();
+        explanation = crewDto.getExplanation();
+        image = crewDto.getImage();
     }
 
     public CrewDto toCrewDto() {
         return CrewDto.builder()
-                .id(id)
-                .crewLeaderId(crewLeaderId)
-                .crewRegion(crewRegion)
-                .openChat(openChat)
-                .crewName(crewName)
-                .explanation(explanation)
+                .crew(this)
                 .build();
     }
-    public List<UserDto> userEntityListToDtoList(){
-        return users.stream()
-                .map(User::toUserDto)
-                .collect(Collectors.toList());
-    }
-
 
     public void setDeleteFlag(boolean deleteFlag) {
         this.deleteFlag = deleteFlag;

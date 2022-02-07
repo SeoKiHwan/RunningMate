@@ -41,12 +41,10 @@ public class CrewService {
             throw new IllegalArgumentException("이미 크루 존재");
         }
 
+        crewDto.setCrewLeaderId(user.getId());
+
         Crew crew = Crew.builder()
-                .crewLeaderId(user.getId())
-                .crewRegion(crewDto.getCrewRegion())
-                .openChat(crewDto.getOpenChat())
-                .crewName(crewDto.getCrewName())
-                .explanation(crewDto.getExplanation())
+                .crewDto(crewDto)
                 .build();
 
         user.addCrew(crew);
