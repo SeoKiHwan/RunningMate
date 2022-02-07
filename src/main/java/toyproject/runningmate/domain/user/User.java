@@ -55,6 +55,8 @@ public class User implements UserDetails {
     @Column(name = "IS_CREW_LEADER")
     private boolean isCrewLeader;
 
+    private String image;
+
     @OneToMany(mappedBy = "sendUser")
     private List<FriendShip> friendShipList = new ArrayList<>();
 
@@ -70,7 +72,7 @@ public class User implements UserDetails {
     }
 
     @Builder
-    public User(String email, String password, String nickName, LocalDateTime regDate, String address, boolean isCrewLeader, List<String> roles) {
+    public User(String email, String password, String nickName, LocalDateTime regDate, String address, boolean isCrewLeader, List<String> roles, String image) {
         this.email = email;
         this.password = password;
         this.nickName = nickName;
@@ -78,6 +80,7 @@ public class User implements UserDetails {
         this.address = address;
         this.isCrewLeader = isCrewLeader;
         this.roles = roles;
+        this.image = image;
     }
 
 
