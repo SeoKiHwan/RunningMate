@@ -1,14 +1,7 @@
 package toyproject.runningmate.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import toyproject.runningmate.domain.crew.Crew;
 import toyproject.runningmate.domain.user.User;
-
-import javax.persistence.ElementCollection;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,30 +18,20 @@ public class UserDto {
     private String address;
     private List<String> roles = new ArrayList<>();
     private boolean isCrewLeader;
-
+    private String token;
     private String crewName;
 
     @Builder
-    public UserDto(Long id, String email, String nickName, LocalDateTime regDate, String address, List<String> roles, boolean isCrewLeader) {
-        this.id = id;
-        this.email = email;
-        this.nickName = nickName;
-        this.regDate = regDate;
-        this.address = address;
-        this.roles = roles;
-        this.isCrewLeader = isCrewLeader;
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.nickName = user.getNickName();
+        this.regDate = user.getRegDate();
+        this.address = user.getAddress();
+        this.roles = user.getRoles();
+        this.isCrewLeader = user.isCrewLeader();
+
+        if(user.getCrew() != null)
+            this.crewName = user.getCrew().getCrewName();
     }
-    public User toEntity(){
-        return User.builder()
-                .email(email)
-                .nickName(nickName)
-                .regDate(regDate)
-                .address(address)
-                .roles(roles)
-                .isCrewLeader(isCrewLeader)
-                .build();
-    }
-
-
-
 }

@@ -1,6 +1,7 @@
 package toyproject.runningmate.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.Collections;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -63,12 +65,6 @@ public class UserService {
         return userRepository.findByNickName(nickName).isPresent();
     }
 
-    //이메일에서 User 얻기
-    public LoginDto getUserByEmail(String email) {
-        return userRepository.findByEmail(email).
-                orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원")).toLoginDto();
-    }
-
     //수정
     @Transactional
     public void updateUser(String nickName, UserDto changeUserDto) {
@@ -93,6 +89,24 @@ public class UserService {
         userRepository.save(member);
 
         return member.getId();
+    }
+
+    public UserDto login(LoginDto loginDto) {
+        log.info("userEmail = {}", loginDto.getEmail());
+
+        User user = userRepository.findByEmail(loginDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일"));
+
+        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("잘못된 비밀번호");
+        }
+
+        String token = jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
+
+        UserDto userDto = user.toUserDto();
+        userDto.setToken(token);
+
+        return userDto;
     }
 
     public User getUserEntity(String nickName) {

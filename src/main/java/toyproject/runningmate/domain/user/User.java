@@ -135,35 +135,9 @@ public class User implements UserDetails {
     }
 
     public UserDto toUserDto() {        // Entity -> UserDto
-        UserDto userDto = UserDto.builder()
-                .id(id)
-                .email(email)
-                .nickName(nickName)
-                .regDate(regDate)
-                .address(address)
-                .roles(roles)
-                .isCrewLeader(isCrewLeader)
+        return UserDto.builder()
+                .user(this)
                 .build();
-
-        if(crew != null){
-            userDto.setCrewName(crew.getCrewName());
-        }
-
-        return userDto;
-    }
-
-    public LoginDto toLoginDto() {        // Entity -> LoginDto
-        LoginDto loginDto = LoginDto.builder()
-                .id(id)
-                .email(email)
-                .nickName(nickName)
-                .regDate(regDate)
-                .address(address)
-                .roles(roles)
-                .isCrewLeader(isCrewLeader)
-                .password(password)
-                .build();
-        return loginDto;
     }
 
     public List<FriendShipDto> userFriendShipListToDto(){
