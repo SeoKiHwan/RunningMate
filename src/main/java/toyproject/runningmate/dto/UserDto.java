@@ -20,18 +20,20 @@ public class UserDto {
     private boolean isCrewLeader;
     private String token;
     private String crewName;
+    private String image;
 
     @Builder
     public UserDto(User user) {
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.nickName = user.getNickName();
-        this.regDate = user.getRegDate();
-        this.address = user.getAddress();
-        this.roles = user.getRoles();
-        this.isCrewLeader = user.isCrewLeader();
+        id = user.getId();
+        email = user.getEmail();
+        nickName = user.getNickName();
+        regDate = user.getRegDate();
+        address = user.getAddress();
+        roles = user.getRoles();
+        isCrewLeader = user.isCrewLeader();
+        image = user.getImage();
 
         if(user.getCrew() != null)
-            this.crewName = user.getCrew().getCrewName();
+            crewName = user.getCrew().getCrewName();
     }
 }

@@ -84,6 +84,7 @@ public class UserService {
                 .address(loginDto.getAddress())
                 .nickName(loginDto.getNickName())
                 .regDate(LocalDateTime.now())
+                .image(loginDto.getImage())
                 .build();
 
         userRepository.save(member);

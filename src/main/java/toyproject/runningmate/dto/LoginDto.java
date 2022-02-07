@@ -19,5 +19,6 @@ public class LoginDto {
     private String address;
     private List<String> roles = new ArrayList<>();
     private boolean isCrewLeader;
+    private String image;
 }
 
