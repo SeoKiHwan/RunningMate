@@ -1,38 +1,21 @@
 package toyproject.runningmate.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
-import toyproject.runningmate.config.security.JwtTokenProvider;
-import toyproject.runningmate.domain.friend.FriendShip;
-import toyproject.runningmate.domain.friend.FriendStatus;
-import toyproject.runningmate.domain.user.User;
-import toyproject.runningmate.dto.FriendShipDto;
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
-import toyproject.runningmate.service.FriendShipService;
 import toyproject.runningmate.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
 
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
-    private final FriendShipService friendShipService;
 
     /**
      *회원가입
@@ -49,24 +32,10 @@ public class UserController {
      *
      * 토큰 + userDto
      */
-    @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody LoginDto loginDto) {
+    @PostMapping("/login/v1")
+    public UserDto loginV1(@RequestBody LoginDto loginDto) {
 
-        LoginDto findLoginDto = userService.getUserByEmail(loginDto.getEmail());
-
-        if (!passwordEncoder.matches(loginDto.getPassword(), findLoginDto.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호");
-        }
-
-        String token = jwtTokenProvider.createToken(findLoginDto.getEmail(), findLoginDto.getRoles());
-
-        UserDto userDto = findLoginDto.loginDtoToUserDto();
-
-        Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put("token", token);
-        userInfo.put("userDto", userDto);
-
-        return userInfo;
+        return userService.login(loginDto);
     }
 
     /**
