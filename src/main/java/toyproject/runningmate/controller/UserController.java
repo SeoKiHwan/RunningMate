@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.service.UserService;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class UserController {
 
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
 
     /**
@@ -86,7 +88,6 @@ public class UserController {
 
         //바꿀 값
         userService.updateUser(findUserDto.getNickName(), userDto);
-
         return ResponseEntity.ok("수정 완료");
     }
 
@@ -111,6 +112,17 @@ public class UserController {
         UserDto findMemberDto = userService.getUserByNickName(nickName);
 
         return ResponseEntity.ok().body(findMemberDto);
+    }
+
+    @GetMapping("/validate")
+    public ResponseEntity<String> validateToken(HttpServletRequest request) {
+
+        String token = request.getHeader("X-AUTH-TOKEN");
+
+        if (jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.ok().body("유효한 토큰");
+        }
+        return ResponseEntity.ok().body("만료된 토큰");
     }
 
 }
