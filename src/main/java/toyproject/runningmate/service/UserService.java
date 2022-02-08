@@ -2,11 +2,9 @@ package toyproject.runningmate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.LoginDto;
