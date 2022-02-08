@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.dto.LoginDto;
 import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.service.UserService;
