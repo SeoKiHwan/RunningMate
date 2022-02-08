@@ -115,4 +115,12 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
     }
 
+    public String validateToken(HttpServletRequest request) {
+
+        String token = request.getHeader("X-AUTH-TOKEN");
+
+        if (jwtTokenProvider.validateToken(token)) return "유효한 토큰";
+        else return "만료된 토큰";
+    }
+
 }
