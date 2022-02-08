@@ -65,9 +65,9 @@ public class CrewController {
      */
     @PostMapping("/crews/{crew-name}/request")
     public Long registCrew(HttpServletRequest request, @PathVariable("crew-name") String crewName) {
-        String userName = userService.getEmailByToken(request);
+        String email = userService.getUserByToken(request).getNickName();
 
-        return crewService.saveRequest(userName, crewName);
+        return crewService.saveRequest(email, crewName);
     }
 
     /**
