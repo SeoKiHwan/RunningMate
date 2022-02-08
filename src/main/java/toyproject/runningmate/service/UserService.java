@@ -2,9 +2,11 @@ package toyproject.runningmate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.LoginDto;
@@ -113,6 +115,14 @@ public class UserService {
     public User getUserEntity(String nickName) {
         return userRepository.findByNickName(nickName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원"));
+    }
+
+    public String validateToken(HttpServletRequest request) {
+
+        String token = request.getHeader("X-AUTH-TOKEN");
+
+        if (jwtTokenProvider.validateToken(token)) return "유효한 토큰";
+        else return "만료된 토큰";
     }
 
 }
