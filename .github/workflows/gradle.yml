@@ -30,5 +30,5 @@ jobs:
     - name: Build with Gradle 
       run: ./gradlew build 
     - name: Docker build 
-      run: | 
-       docker build -t running-web .
+      run: |
+        docker build --build-arg DEPENDENCY=build/dependency -t sekihwan/running-web .
