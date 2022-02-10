@@ -27,10 +27,8 @@ jobs:
         distribution: 'temurin'
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build Clean with Gradle
-      run: ./gradlew clean
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew clean build
     - name: Docker build
       run: | 
        docker login -u ${{ secrets.USERNAME }} -p ${{ secrets.PASSWORD }}
