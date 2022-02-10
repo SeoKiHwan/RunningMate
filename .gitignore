@@ -2,7 +2,7 @@ HELP.md
 .DS_Store
 .gradle
 build/
-.yml
+#.yml
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
@@ -10,7 +10,7 @@ build/
 
 build.gradle
 application.properties
-application.yml
+#application.yml
 
 
 ### STS ###
