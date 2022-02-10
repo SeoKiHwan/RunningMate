@@ -9,9 +9,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ cibran ]
+    branches: [ myworkflow ]
   pull_request:
-    branches: [ cibran ]
+    branches: [ myworkflow ]
 
 jobs:
   build:
