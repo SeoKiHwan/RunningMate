@@ -19,6 +19,10 @@ bootJar{ archivesBaseName = 'app'
     archiveVersion = "0.0.0"
 }
 
+jar {
+    enabled = false
+}
+
 repositories {
     mavenCentral()
 }
