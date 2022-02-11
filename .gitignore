@@ -7,8 +7,6 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-settings.gradle
-build.gradle
 application.properties
 application.yml
 
