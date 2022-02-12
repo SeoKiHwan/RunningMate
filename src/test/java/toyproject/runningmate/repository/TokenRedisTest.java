@@ -1,25 +1,14 @@
 package toyproject.runningmate.repository;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import toyproject.runningmate.domain.user.User;
+import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.dto.LoginDto;
-import toyproject.runningmate.dto.UserDto;
 import toyproject.runningmate.service.UserService;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
-class TokenRedisRepositoryTest {
-
-//    @Autowired
-//    private TokenRedisRepository tokenRedisRepository;
+class TokenRedisTest {
 
     @Autowired
     public UserRepository userRepository;
@@ -27,12 +16,15 @@ class TokenRedisRepositoryTest {
     @Autowired
     public UserService userService;
 
+    @Autowired
+    public JwtTokenProvider jwtTokenProvider;
+
     @Test
-    void test(){
+    void test() {
 
 
         // 유저 가입
-        LoginDto loginDto=new LoginDto();
+        LoginDto loginDto = new LoginDto();
         loginDto.setEmail("email1");
         loginDto.setPassword("pw");
         loginDto.setNickName("nick");
@@ -46,15 +38,17 @@ class TokenRedisRepositoryTest {
         // 로그인 후 토큰
         String token = userService.login(loginDto).getToken();
 
-        // 로그아웃 했을 시
+        if (jwtTokenProvider.validateToken(token)) {
+            System.out.println("유효한 토큰입니다");
+        }
 
+        //로그아웃 호출
+        System.out.println(userService.logout(token));
 
-
-
-
+        if (jwtTokenProvider.validateToken(token)) {
+            System.out.println("아직 유효한 토큰");
+        } else System.out.println("로그아웃 처리 된 토큰");
 
     }
-
-
 
 }
