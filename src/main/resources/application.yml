@@ -9,7 +9,9 @@ spring:
   #    password:
   #    driver-class-name: org.h2.Driver
 
-
+  redis:
+    host: 13.125.249.178
+    port: 6379
 
   jpa:
     hibernate:
