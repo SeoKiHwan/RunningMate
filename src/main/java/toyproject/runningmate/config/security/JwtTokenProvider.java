@@ -82,4 +82,15 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
+    //  토큰의 만료시간 return
+    public Long getExpiration(String jwtToken) {
+        // accessToken 남은 유효시간
+        Date expiration = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken).getBody().getExpiration();
+        // 현재 시간
+        Long now = new Date().getTime();
+        return (expiration.getTime() - now);
+    }
+
+
 }
