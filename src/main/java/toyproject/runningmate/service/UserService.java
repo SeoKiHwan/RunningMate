@@ -3,12 +3,9 @@ package toyproject.runningmate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import toyproject.runningmate.config.security.JwtTokenProvider;
 import toyproject.runningmate.domain.user.User;
 import toyproject.runningmate.dto.LoginDto;
@@ -19,7 +16,6 @@ import toyproject.runningmate.repository.UserRepository;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -128,19 +124,15 @@ public class UserService {
 
         if (!jwtTokenProvider.validateToken(token)) return "만료된 토큰";
 
-        String isLogout = (String)redisTemplate.opsForValue().get(token);
-
-        if(!ObjectUtils.isEmpty(isLogout)) return "로그아웃 된 토큰";
-
         return "유효한 토큰";
     }
 
-    public String logout(String token){
+    public String logout(HttpServletRequest request){
+        String token = jwtTokenProvider.resolveToken(request);
 
-        if(!jwtTokenProvider.validateToken(token)){
+        if(!jwtTokenProvider.validateToken(token)){ // 이미 만료됐거나, 잘못된 형식의 토큰일 때
             return "잘못된 요청입니다";
         }
-
         Long expiration = jwtTokenProvider.getExpiration(token);
         redisTemplate.opsForValue().set(token, "logout", expiration, TimeUnit.MILLISECONDS);
         return "로그아웃 성공";

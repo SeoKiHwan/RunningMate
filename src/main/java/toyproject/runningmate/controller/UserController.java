@@ -117,10 +117,9 @@ public class UserController {
         return userService.validateToken(request);
     }
 
-    @PostMapping("/tokenlogout")
+    @GetMapping("/user/logout")
     public String logout(HttpServletRequest request){
-        String token = request.getHeader("X-AUTH-TOKEN");
-        return userService.logout(token);
+        return userService.logout(request);
     }
 
 }
