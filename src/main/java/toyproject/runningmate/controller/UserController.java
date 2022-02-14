@@ -109,4 +109,9 @@ public class UserController {
         return ResponseEntity.ok().body(findMemberDto);
     }
 
+    @GetMapping("/validate")
+    public String validateToken(HttpServletRequest request) {
+        return userService.validateToken(request);
+    }
+
 }
