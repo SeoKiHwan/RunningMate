@@ -73,21 +73,17 @@ public class UserController {
      *
      */
     @PostMapping("/users/{user-name}")
-    public ResponseEntity<String> updateUser(HttpServletRequest request,  @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> updateUser(HttpServletRequest request,  @RequestBody UserDto userDto) {
 
         UserDto findUserDto = userService.getUserByToken(request);
 
-        //닉네임을 변경하려는 시도라면
-        if(!findUserDto.getNickName().equals(userDto.getNickName())) {
-            if (userService.isExistNickName(userDto.getNickName())) {
-                return new ResponseEntity<>("중복된 닉네임입니다.", HttpStatus.CONFLICT);
-            }
-        }
-
         //바꿀 값
-        userService.updateUser(findUserDto.getNickName(), userDto);
+        UserDto updateUserDto = userService.updateUser(findUserDto.getNickName(), userDto);
 
-        return ResponseEntity.ok("수정 완료");
+        if(updateUserDto == null)
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+
+        return new ResponseEntity<>(updateUserDto, HttpStatus.OK);
     }
 
     /**
