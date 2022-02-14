@@ -177,6 +177,15 @@ public class CrewService {
         crew.changeCrewName(newName);
     }
 
+    //crew정보 변경
+    @Transactional
+    public CrewDto changeCrewInfo(String crewName, CrewDto crewDto) {
+        Crew crew = getCrewEntity(crewName);
+        crew.updateCrewInfo(crewDto);
+
+        return crew.toCrewDto();
+    }
+
     @Transactional
     public void changeMember(String userName){
         log.info("userName = {}", userName);
