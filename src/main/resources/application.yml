@@ -10,7 +10,7 @@ spring:
   #    driver-class-name: org.h2.Driver
 
   redis:
-    host: localhost
+    host: 3.34.178.11
     port: 6379
 
   jpa:
