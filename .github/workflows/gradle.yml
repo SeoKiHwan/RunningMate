@@ -35,3 +35,15 @@ jobs:
        docker build -t running-web .
        docker tag running-web sekihwan/running-web:${GITHUB_SHA::7}
        docker push sekihwan/running-web:${GITHUB_SHA::7}
+    
+    - name: Deploy 
+      uses: appleboy/ssh-action@master 
+      with: host: ec2-3-34-178-11.ap-northeast-2.compute.amazonaws.com 
+      username: ec2-user 
+      key: ${{ secrets.PRIVATE_KEY }} 
+      envs: GITHUB_SHA 
+      script: | 
+      docker pull sekihwan/running-web:${GITHUB_SHA::7} 
+      docker tag sekihwan/running-web:${GITHUB_SHA::7} mate 
+      docker stop mate 
+      docker run -d --rm --name mate -p 8080:8080 mate
