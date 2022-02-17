@@ -36,7 +36,7 @@ jobs:
        docker tag running-web sekihwan/running-web:${GITHUB_SHA::7}
        docker push sekihwan/running-web:${GITHUB_SHA::7}
     - name: Deploy 
-      uses: SeoKiHwan/RunningMate@myworkflow
+      uses: appleboy/ssh-action@master
       with: 
         host: ec2-3-34-178-11.ap-northeast-2.compute.amazonaws.com 
         username: ec2-user 
