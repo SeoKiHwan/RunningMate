@@ -34,15 +34,15 @@ public class RunningmateApplication {
 		SpringApplication.run(RunningmateApplication.class, args);
 	}
 
-	@PostConstruct
-	public void init() {
-		userRepository.save(User.builder()
-				.email("email")
-				.password(passwordEncoder.encode("password"))
-				.roles(Collections.singletonList("ROLE_ADMIN"))
-				.address("미정")
-				.nickName("운영자")
-				.build()).getId();
-	}
+	// @PostConstruct
+	// public void init() {
+	// 	userRepository.save(User.builder()
+	// 			.email("email")
+	// 			.password(passwordEncoder.encode("password"))
+	// 			.roles(Collections.singletonList("ROLE_ADMIN"))
+	// 			.address("미정")
+	// 			.nickName("운영자")
+	// 			.build()).getId();
+	// }
 
 }
