@@ -70,10 +70,18 @@ public class UserService {
 
     //수정
     @Transactional
-    public void updateUser(String nickName, UserDto changeUserDto) {
+    public UserDto updateUser(String nickName, UserDto changeUserDto) {
         User findUser = getUserEntity(nickName);
 
-        findUser.update(changeUserDto.getNickName(), changeUserDto.getAddress());
+        if (!nickName.equals(changeUserDto.getNickName())) {
+            if (isExistNickName(changeUserDto.getNickName())) {
+                return null;
+            }
+        }
+
+        findUser.update(changeUserDto);
+
+        return findUser.toUserDto();
     }
 
 
