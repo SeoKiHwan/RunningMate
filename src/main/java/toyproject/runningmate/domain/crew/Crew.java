@@ -74,6 +74,13 @@ public class Crew {
         this.crewName = crewName;
     }
 
+    public void updateCrewInfo(CrewDto crewDto) {
+        crewRegion = crewDto.getCrewRegion();
+        image = crewDto.getImage();
+        openChat = crewDto.getOpenChat();
+        explanation = crewDto.getExplanation();
+    }
+
     public void changeCrewLeaderId(Long newLeaderId){
         this.crewLeaderId=newLeaderId;
     }
