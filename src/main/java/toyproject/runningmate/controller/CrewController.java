@@ -147,6 +147,14 @@ public class CrewController {
         return ResponseEntity.ok("이름 변경 완료");
     }
 
+    //크루 정보 수정
+    @PatchMapping("/crews/{crew-name}")
+    public CrewDto changeCrewInfo(@PathVariable("crew-name") String crewName,
+                                  @RequestBody CrewDto crewDto) {
+
+        return crewService.changeCrewInfo(crewName, crewDto);
+    }
+
 
     /**
      * 크루원 추방 or 자진 탈퇴

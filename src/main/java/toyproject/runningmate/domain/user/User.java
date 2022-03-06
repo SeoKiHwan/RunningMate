@@ -117,9 +117,10 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void update(String nickName, String address){
-        this.nickName = nickName;
-        this.address = address;
+    public void update(UserDto userDto){
+        nickName = userDto.getNickName();
+        address = userDto.getAddress();
+        image = userDto.getImage();
     }
 
     //양방향 편의 메서드
